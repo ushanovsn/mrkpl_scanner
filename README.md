@@ -1,2 +1,3 @@
 # mrkpl_scanner
-Marketplaces parser/scanner/notificator
+
+Сканер маркетплейсов. Мониторинг цен. Контроль и уведомления.

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/assets/style.css">
+    <title>{{.Title}}</title>
+
+    <script>
+        function extractFilename(path) {
+            if (path.substr(0, 12) == "C:\\fakepath\\")
+                return path.substr(12); // modern browser
+            var x;
+            x = path.lastIndexOf('/');
+            if (x >= 0) // Unix-based path
+                return path.substr(x+1);
+            x = path.lastIndexOf('\\');
+            if (x >= 0) // Windows-based path
+                return path.substr(x+1);
+            return path; // just the filename
+            }
+
+        function updateFilename(path) {
+          var name = extractFilename(path);
+          document.getElementById('filename').value = name;
+        }
+    </script>
+
+</head>
+<body>
+
+    <header>
+        <h2>
+            <a href="\">{{.Title}}</a>
+        </h2>
+    </header>
+
+    <p>
+        <div class="base">
+            <div class="gconf_list">
+                <form id="gform" method="POST" action="/gparams" enctype="multipart/form-data">
+                    <div class="width100">
+                        <label>{{.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
+                        <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.GPageURL}}"/><br><br>
+                        <label>{{.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
+                        <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.AuthClient}}" disabled/><br><br>
+                        <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
+                        <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                        <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                    </div>
+                </form>
+                <button autofocus type="submit" form="gform" value="apply" >Отправить</button>
+            </div>
+        </div>
+    </p>
+
+
+</body>
+</html>

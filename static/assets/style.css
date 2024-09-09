@@ -1,0 +1,82 @@
+
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+
+header h2 {
+  margin-top: 1%;
+  text-align: center;
+}
+
+
+.base {
+  align-items: center;
+  display: flex;
+  background-color: rgb(142, 187, 224);
+  position: relative;
+  width: 80%;
+  height: 250px;
+  margin: 20px auto;
+  border: 1px solid gray;
+}
+
+
+#index {
+  justify-content: center;
+  height: 200px;
+}
+
+label {
+  font-style: italic;
+}
+.conf_list {
+  margin: 10px;
+}
+
+.conf_list * {
+  width: 150px;
+  text-align: center;
+}
+
+.conf_list a:visited, a:link {
+	color: midnightblue;
+}
+
+.conf_list a:hover {
+	text-decoration: none;
+}
+
+
+
+.gconf_list {
+  margin: 5%;
+  width: 100%;
+  /*border: 1px solid red;*/
+
+  display: grid;
+  place-items: center;
+}
+
+
+.gconf_list form {
+  width: 100%;
+}
+
+
+.width100 * {
+  width: 100%;
+}
+
+.width100 input[type=file] {
+  width: 130px;
+}
+
+
+
