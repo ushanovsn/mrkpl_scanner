@@ -7,6 +7,7 @@ type GParamsPageData struct {
 	GPageURLOkPref   string
 	AuthClient       string
 	AuthClientOkPref string
+	ErrLog           []string
 }
 
 type PParamsPageData struct {

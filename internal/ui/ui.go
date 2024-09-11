@@ -12,6 +12,8 @@ import (
 func NewUI() *opt.UIObj {
 	ui := &opt.UIObj{}
 	ui.SetDefaultUI()
+	ui.SetUIServer(&http.Server{})
+	ui.SetUIRouter(chi.NewRouter())
 	return ui
 }
 
@@ -22,13 +24,12 @@ func StartUIServer(scnr *opt.ScannerObj) error {
 
 	setRouter(scnr)
 
-	return http.ListenAndServe(scnr.GetAddr(), scnr.GetUIObj().GetUIHandler())
+	return http.ListenAndServe(scnr.GetAddr(), scnr.GetUIObj().GetUIRouter())
 }
 
 // Custom mux with router interface
 func setRouter(scnr *opt.ScannerObj) {
-	ui := scnr.GetUIObj()
-	route := chi.NewRouter()
+	route := scnr.GetUIObj().GetUIRouter()
 
 	// fileserver for static files and css
 	fs := http.FileServer(http.Dir("./static/assets"))
@@ -49,7 +50,4 @@ func setRouter(scnr *opt.ScannerObj) {
 			r.Get("/", handlers.StatusPage(scnr))
 		})
 	})
-
-	// set router in UI object
-	ui.SetUIHandler(route)
 }

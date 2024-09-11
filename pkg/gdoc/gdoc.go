@@ -6,7 +6,6 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
-	"os"
 )
 
 // Init new empty GDoc object
@@ -17,22 +16,15 @@ func NewGDoc() *GDocObj {
 
 // Autentication with google account key
 func (gDoc *GDocObj) GoogleAuth() error {
-	var json_key []byte
 	var err error
 
-	fName := gDoc.authKeyFile
+	json_key := gDoc.authKeyFile
 
 	ctx := context.Background()
 
 	// Authentication
-	if fName == "" {
+	if len(json_key) == 0 {
 		return fmt.Errorf("Have No Authentication Data")
-	} else {
-		// read key from file (for small files uses ReadFile)
-		json_key, err = os.ReadFile(fName)
-		if err != nil {
-			return fmt.Errorf("Error reading Google account authentication file. Error: %s", err.Error())
-		}
 	}
 
 	config, err := google.JWTConfigFromJSON([]byte(json_key), "https://www.googleapis.com/auth/spreadsheets")

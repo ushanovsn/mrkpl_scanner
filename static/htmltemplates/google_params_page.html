@@ -53,6 +53,16 @@
                 <button autofocus type="submit" form="gform" value="apply" >Отправить</button>
             </div>
         </div>
+
+        {{if not (eq .ErrLog nil)}}
+            <div class="warningslines">
+                {{range .ErrLog}}
+                <ul>
+                    <li>{{.}}</li>
+                </ul>
+                {{end}}
+            </div>
+        {{end}}
     </p>
 
 

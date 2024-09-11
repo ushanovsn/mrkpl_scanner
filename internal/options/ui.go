@@ -1,37 +1,31 @@
 package options
 
 import (
+	"github.com/go-chi/chi/v5"
 	"net/http"
 )
 
 type UIObj struct {
-	hndlr     http.Handler
-	tmplPath  string
-	asstsPath string
-	title     string
+	server *http.Server
+	router chi.Router
 }
 
-// Get UI handler
-func (obj *UIObj) GetUIHandler() http.Handler {
-	return obj.hndlr
+// Get UI http server
+func (obj *UIObj) GetUIServer() *http.Server {
+	return obj.server
 }
 
-// Set UI handler to obj
-func (obj *UIObj) SetUIHandler(h http.Handler) {
-	obj.hndlr = h
+// Set UI http server to obj
+func (obj *UIObj) SetUIServer(s *http.Server) {
+	obj.server = s
 }
 
-// Get UI title
-func (obj *UIObj) GetUITitle() string {
-	return obj.title
+// Get UI http router
+func (obj *UIObj) GetUIRouter() chi.Router {
+	return obj.router
 }
 
-// Get UI path to html templates
-func (obj *UIObj) GetUITemplPath() string {
-	return obj.tmplPath
-}
-
-// Get UI path to assets
-func (obj *UIObj) GetUIAssetsPath() string {
-	return obj.asstsPath
+// Set UI server to obj
+func (obj *UIObj) SetUIRouter(r chi.Router) {
+	obj.router = r
 }

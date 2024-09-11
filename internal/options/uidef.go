@@ -11,7 +11,4 @@ const (
 
 // Set default values to UI structure
 func (obj *UIObj) SetDefaultUI() {
-	obj.title = DefUIPageTitle
-	obj.tmplPath = DefUITemplatesPath
-	obj.asstsPath = DefUIAssetsPath
 }

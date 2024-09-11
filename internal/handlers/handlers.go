@@ -5,8 +5,6 @@ import (
 	"html/template"
 	opt "mrkpl_scanner/internal/options"
 	"net/http"
-	"regexp"
-	"strconv"
 )
 
 // Processor for Index page "/"
@@ -21,7 +19,7 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 			ParserParamPage         string
 			ScannerParserStatusPage string
 		}{
-			Title:                   scnr.GetUIObj().GetUITitle(),
+			Title:                   opt.DefUIPageTitle,
 			GoogleParamPage:         "gparams",
 			ParserParamPage:         "pparams",
 			ScannerParserStatusPage: "status",
@@ -32,7 +30,7 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
 		// load template file
-		tmpl, err := template.ParseFiles(scnr.GetUIObj().GetUITemplPath() + "/index.html")
+		tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/index.html")
 
 		if err != nil {
 			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
@@ -54,66 +52,10 @@ func GParamsPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
 
-		// prepare data values for page
-		data := opt.GParamsPageData{
-			Title:      scnr.GetUIObj().GetUITitle(),
-			GPageURL:   scnr.GetGDocSvc().GetGSheetURL(),
-			AuthClient: scnr.GetGDocSvc().GetCurClien(),
+		// execute template and apply data
+		if err := writeGParams(w, scnr, nil); err != nil {
+			log.Error(err.Error())
 		}
-
-		// check incoming URL parameters
-		updUrl, _ := strconv.ParseBool(r.URL.Query().Get("u"))
-		updFile, _ := strconv.ParseBool(r.URL.Query().Get("f"))
-		referAdr := r.Referer()
-		isUploading, _ := regexp.Match("^*/gparams(\\?|\\z)+", []byte(referAdr))
-
-		// When load parameters and redirect back to here
-		if isUploading {
-			// mark upload new params result
-			if updUrl {
-				data.GPageURLOkPref = "✔️"
-			} else {
-				data.GPageURLOkPref = "❌"
-			}
-
-			if updFile {
-				data.AuthClientOkPref = "✔️"
-			} else {
-				data.AuthClientOkPref = "❌"
-			}
-
-		} else {
-			// check current values
-			if data.GPageURL != "" {
-				data.GPageURLOkPref = "✔️"
-			} else {
-				data.GPageURLOkPref = "❌"
-			}
-
-			if data.AuthClient != "" {
-				data.AuthClientOkPref = "✔️"
-			} else {
-				data.AuthClientOkPref = "❌"
-			}
-		}
-
-		header := http.StatusOK
-		w.Header().Add("Content-Type", "text/html; charset=utf-8")
-
-		tmpl, err := template.ParseFiles(scnr.GetUIObj().GetUITemplPath() + "/google_params_page.html")
-
-		if err != nil {
-			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
-			header = http.StatusInternalServerError
-			w.WriteHeader(header)
-		} else {
-			w.WriteHeader(header)
-			err = tmpl.Execute(w, data)
-			if err != nil {
-				log.Error(fmt.Sprintf("Error executing template: %v\n", err.Error()))
-			}
-		}
-
 	})
 }
 
@@ -121,21 +63,31 @@ func GParamsPage(scnr *opt.ScannerObj) http.HandlerFunc {
 func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
-		// flag for file processing
-		var fFileRes bool = false
-		// flag for URL processing
-		var fUrlRes bool = false
+		// errors for show at page
+		var errList []string
 
 		// Maximum upload file size in bytes
 		var maxSize int64 = 10240
-		if err:= r.ParseMultipartForm(maxSize); err != nil {
+		// Parse posted data
+		if err := r.ParseMultipartForm(maxSize); err != nil {
 			log.Error("Error when parsing form getting the file. Error: " + err.Error())
+			errList = append(errList, "Ошибка обработки загруженных данных")
+			err := writeGParams(w, scnr, errList)
+			if err != nil {
+				log.Error(err.Error())
+			}
+			return
 		}
 
 		// Get handler for filename, size and headers
-		file, handler, err := r.FormFile("file")
-		if err != nil {
-			log.Error("Error when retrieving the file. Error: " + err.Error())
+		if file, handler, err := r.FormFile("file"); err != nil {
+			// if no file - nothing to do
+			if err != http.ErrMissingFile {
+				log.Error("Error when retrieving the file. Error: " + err.Error())
+				errList = append(errList, "Ошибка чтения загруженного файла аутентификации")
+			} else {
+				log.Warn("Uploaded file is empty")
+			}
 		} else {
 			defer file.Close()
 
@@ -147,30 +99,33 @@ func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 			for i, v := range handler.Header {
 				if i == "Content-Type" && v[0] != "application/json" {
 					log.Error("Wrong content type for uploaded file. Content: " + v[0])
+					errList = append(errList, "Ошибка чтения загруженного файла аутентификации")
 				} else if i == "Content-Type" && v[0] == "application/json" {
 					// check size
 					if handler.Size >= maxSize {
 						log.Error(fmt.Sprintf("Can't upload the file more than %v Kb.", maxSize/1024))
+						errList = append(errList, "Загружен некорректный формат файла аутентификации, файл должен быть JSON типа")
 					} else {
 						if handler.Size == 0 {
 							log.Error("Uploaded file is empty")
+							errList = append(errList, "Загружен пустой файл аутентификации")
 						} else {
 							// Create a byte slice with the same size as the file
 							fileContent := make([]byte, handler.Size)
 							// Read the file content into the byte slice
 							if _, err = file.Read(fileContent); err != nil {
 								log.Error(fmt.Sprintf("Error while read file content. Error: %s", err.Error()))
+								errList = append(errList, "Ошибка чтения содержимого загруженного файла аутентификации")
 							} else {
 								if err := scnr.GetGDocSvc().SetAuthKeyFile(string(fileContent)); err != nil {
 									log.Error(fmt.Sprintf("Error when set json content to GDoc object. Error: %s", err.Error()))
+									errList = append(errList, "Ошибка применения аутентификационных данных загруженного файла")
 								} else {
 									// save data to param file
 									err := scnr.GetParam().SetValue(opt.DefParamGAuthNameP, string(fileContent))
 									if err != nil {
 										log.Error(fmt.Sprintf("Error when save json content to parameters file. Error: %s", err.Error()))
-									} else {
-										// all is ok
-										fFileRes = true
+										errList = append(errList, "Ошибка сохранения загруженного файла аутентификации Google-аккаунта в стстеме")
 									}
 								}
 							}
@@ -182,41 +137,90 @@ func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 
 		// Get text value of URL
 		val := r.FormValue("sheeturl")
-		if val == "" {
-			log.Error("Uploaded URL is empty")
-		}
 
 		log.Debug("Page \"GParams\" uploaded the URL: " + val)
 
-		// Set URL to GDoc object
-		if err := scnr.GetGDocSvc().SetGSheetURL(val); err != nil {
-			log.Error(fmt.Sprintf("Error when parse URL content to GDoc object. Error: %s", err.Error()))
+		if val == "" {
+			log.Warn("Uploaded URL is empty")
 		} else {
-			// save data to param file
-			err := scnr.GetParam().SetValue(opt.DefParamGURLNameP, string(val))
-			if err != nil {
-				log.Error(fmt.Sprintf("Error when save URL content to parameters file. Error: %s", err.Error()))
+			// Set URL to GDoc object
+			if err := scnr.GetGDocSvc().SetGSheetURL(val); err != nil {
+				log.Error(fmt.Sprintf("Error when parse URL content to GDoc object. Error: %s", err.Error()))
+				errList = append(errList, "В загруженных данных указан некорректный адрес Google-документа")
 			} else {
-				// all is ok
-				fUrlRes = true
+				// save data to param file
+				err := scnr.GetParam().SetValue(opt.DefParamGURLNameP, string(val))
+				if err != nil {
+					log.Error(fmt.Sprintf("Error when save URL content to parameters file. Error: %s", err.Error()))
+					errList = append(errList, "Ошибка сохранения загруженного адреса Google-документа в стстеме")
+				}
 			}
 		}
 
-		http.Redirect(w, r, fmt.Sprintf("/gparams?f=%v&u=%v", fFileRes, fUrlRes), http.StatusMovedPermanently)
+		// execute template and apply data
+		if err := writeGParams(w, scnr, errList); err != nil {
+			log.Error(err.Error())
+		}
 	})
+}
+
+// Main writer for http page with Google Params. Processing data and execute base template
+func writeGParams(w http.ResponseWriter, scnr *opt.ScannerObj, errList []string) error {
+
+	// prepare data values for page
+	data := opt.GParamsPageData{
+		Title:      opt.DefUIPageTitle,
+		GPageURL:   scnr.GetGDocSvc().GetGSheetURL(),
+		AuthClient: scnr.GetGDocSvc().GetCurClien(),
+	}
+
+	// check current values and set indicators
+	if data.GPageURL != "" {
+		data.GPageURLOkPref = "✔️"
+	} else {
+		data.GPageURLOkPref = "❌"
+		data.ErrLog = append(data.ErrLog, "В системе не задан URL адрес Google-документа")
+	}
+	if data.AuthClient != "" {
+		data.AuthClientOkPref = "✔️"
+	} else {
+		data.AuthClientOkPref = "❌"
+		data.ErrLog = append(data.ErrLog, "В системе отсутствуют аутентификационные данные Google-аккаунта")
+	}
+
+	data.ErrLog = append(data.ErrLog, errList...)
+
+	header := http.StatusOK
+	w.Header().Add("Content-Type", "text/html; charset=utf-8")
+
+	tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/google_params_page.html")
+
+	if err != nil {
+		err = fmt.Errorf("Error while loading HTML template file: %v\n", err.Error())
+		header = http.StatusInternalServerError
+		w.WriteHeader(header)
+	} else {
+		w.WriteHeader(header)
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			err = fmt.Errorf("Error executing template: %v\n", err.Error())
+		}
+	}
+
+	return err
 }
 
 func PParamsPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
 		data := opt.PParamsPageData{
-			Title: scnr.GetUIObj().GetUITitle(),
+			Title: opt.DefUIPageTitle,
 		}
 
 		header := http.StatusOK
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
-		tmpl, err := template.ParseFiles(scnr.GetUIObj().GetUITemplPath() + "/pparams_page.html")
+		tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/pparams_page.html")
 
 		if err != nil {
 			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
@@ -237,13 +241,13 @@ func StatusPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
 		data := opt.PParamsPageData{
-			Title: scnr.GetUIObj().GetUITitle(),
+			Title: opt.DefUIPageTitle,
 		}
 
 		header := http.StatusOK
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
-		tmpl, err := template.ParseFiles(scnr.GetUIObj().GetUITemplPath() + "/status.html")
+		tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/status.html")
 
 		if err != nil {
 			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
