@@ -10,7 +10,7 @@ func main() {
 
 	scnr, err := scanner.InitService()
 	if err == nil {
-		scanner.StartService(scnr)
+		scanner.RunService(scnr)
 
 		scanner.StopService(scnr)
 	} else {

@@ -2,6 +2,7 @@ package options
 
 import (
 	"mrkpl_scanner/pkg/gdoc"
+	"sync"
 
 	"github.com/ushanovsn/golanglogger"
 	"github.com/ushanovsn/goutils/params"
@@ -14,6 +15,8 @@ type ScannerObj struct {
 	gDoc     *gdoc.GDocObj
 	uiObj    *UIObj
 	paramObj *params.ParamsObj
+	wg       *sync.WaitGroup
+	stpChan  chan int
 }
 
 //
@@ -104,4 +107,22 @@ func (obj *ScannerObj) SetParam(p *params.ParamsObj) {
 // Getting the parameters file name
 func (obj *ScannerObj) GetParamFName() string {
 	return DefParamFileName
+}
+
+// SYNC OBJECTS
+
+// Get wait group
+func (obj *ScannerObj) GetWG() *sync.WaitGroup {
+	if obj.wg == nil {
+		obj.wg = &sync.WaitGroup{}
+	}
+	return obj.wg
+}
+
+// Get stop proc channel
+func (obj *ScannerObj) GetStopChan() chan int {
+	if obj.stpChan == nil {
+		obj.stpChan = make(chan int)
+	}
+	return obj.stpChan
 }

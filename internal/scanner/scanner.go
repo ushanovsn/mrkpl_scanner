@@ -6,54 +6,66 @@ import (
 	"mrkpl_scanner/internal/options"
 	"mrkpl_scanner/internal/ui"
 	"mrkpl_scanner/pkg/gdoc"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/ushanovsn/goutils/baseconf"
 	"github.com/ushanovsn/goutils/params"
 )
 
 // Starting processes
-func StartService(scnr *options.ScannerObj) {
-	var err error
+func RunService(scnr *options.ScannerObj) {
+	//var err error
 	log := scnr.GetLogger()
 	log.Out("Service starting...")
 
 	// start GUI
-	err = ui.StartUIServer(scnr)
-	if err != nil {
-		log.Error(err.Error())
-		return
-	}
+	ui.StartUIServer(scnr)
 
-	doc := scnr.GetGDocSvc()
-	err = doc.GoogleAuth()
-	if err != nil {
-		log.Error(err.Error())
-		return
-	}
+	/*
+		doc := scnr.GetGDocSvc()
+		err = doc.GoogleAuth()
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
 
-	n, err := gdoc.GoogleSetSheet(doc, 0, "")
-	if err != nil {
-		log.Error(err.Error())
-		return
-	}
+		n, err := gdoc.GoogleSetSheet(doc, 0, "")
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
 
-	fmt.Printf("start with sheet: %s \n", n)
+		fmt.Printf("start with sheet: %s \n", n)
 
-	// scanner START!
+		// scanner START!
 
-	// test
-	dErr := gdoc.GoogleTest(doc)
-	if dErr != nil {
-		log.Error(dErr.Error())
-		return
-	}
+		// test
+		dErr := gdoc.GoogleTest(doc)
+		if dErr != nil {
+			log.Error(dErr.Error())
+			return
+		}
+	*/
 
+	// Waiting STOP commands and OS signals for exit
+	exitLine := closeHandler(scnr.GetStopChan())
+	log.Out(exitLine)
 }
 
 // Stop all process
 func StopService(scnr *options.ScannerObj) {
 	log := scnr.GetLogger()
-	log.Out("Service stopping...")
+	log.Out("Service stopping... Waiting closing processes...")
+
+	// stopping web server
+	if err := ui.StopUIServer(scnr); err != nil {
+		log.Error("Error when stopping WEB UI Server. Err: " + err.Error())
+	}
+
+	// wait stopping goroutines
+	scnr.GetWG().Wait()
 
 	// stopping logger
 	scnr.GetLogger().StopLog()
@@ -144,5 +156,29 @@ func initCF(scnr *options.ScannerObj) {
 	}
 	if szm, szd := log.CurrentFileControl(); szm != int(scnr.GetConfigPtr().LogSizeMb) || szd != int(scnr.GetConfigPtr().LogSizeD) {
 		log.SetFileParam(int(szm), int(szd))
+	}
+}
+
+// Listenner os STOP process cmd and OS signals to quit
+func closeHandler(stpch chan int) string {
+	// channel for incoming OS signals
+	sigChan := make(chan os.Signal, 1)
+	// list of waiting types OS signals
+	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGABRT)
+
+	// waiting OS closing APP or stop command by algorithms
+	select {
+	case s := <-sigChan:
+		if s == syscall.SIGTERM {
+			return "OS: Got kill signal"
+		} else if s == syscall.SIGINT {
+			return "OS: Got CTRL+C signal"
+		} else if s == syscall.SIGQUIT {
+			return "OS: Got CTRL+\\ signal"
+		} else {
+			return fmt.Sprintf("OS: Got CTRL+C signal: %v", s)
+		}
+	case s := <-stpch:
+		return fmt.Sprintf("Got algorithm stop signal: %v", s)
 	}
 }

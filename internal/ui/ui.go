@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"context"
+	"fmt"
 	"mrkpl_scanner/internal/handlers"
 	opt "mrkpl_scanner/internal/options"
 	"net/http"
@@ -18,13 +20,26 @@ func NewUI() *opt.UIObj {
 }
 
 // Starting UI Server process with configuration
-func StartUIServer(scnr *opt.ScannerObj) error {
+func StartUIServer(scnr *opt.ScannerObj) {
 	log := scnr.GetLogger()
 	log.Out("Starting Web UI...")
 
+	// init routers
 	setRouter(scnr)
 
-	return http.ListenAndServe(scnr.GetAddr(), scnr.GetUIObj().GetUIRouter())
+	// set server parameters
+	scnr.GetUIObj().GetUIServer().Addr = scnr.GetAddr()
+	scnr.GetUIObj().GetUIServer().Handler = scnr.GetUIObj().GetUIRouter()
+
+	scnr.GetWG().Add(1)
+	// start server
+	go func() {
+		err := scnr.GetUIObj().GetUIServer().ListenAndServe()
+		if err != http.ErrServerClosed {
+			log.Out(fmt.Sprintf("Error while WEB UI stopping: %s", err.Error()))
+		}
+		scnr.GetWG().Done()
+	}()
 }
 
 // Custom mux with router interface
@@ -50,4 +65,18 @@ func setRouter(scnr *opt.ScannerObj) {
 			r.Get("/", handlers.StatusPage(scnr))
 		})
 	})
+}
+
+// Stopping UI Server
+func StopUIServer(scnr *opt.ScannerObj) error {
+	log := scnr.GetLogger()
+	log.Info("Stopping Web UI...")
+
+	ctx := context.Background()
+	// set server parameters
+	err := scnr.GetUIObj().GetUIServer().Shutdown(ctx)
+
+	log.Info("Web UI Stopped...")
+
+	return err
 }
