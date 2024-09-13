@@ -8,20 +8,19 @@ import (
 )
 
 func main() {
-	fmt.Printf("### Scanner ###\n")
-
+	title := "### Scanner ###"
+	fmt.Printf("%s\n", title)
 	// no control error
-	_, err := contitle.SetTitle("### Scanner ###")
-	if err != nil {
-		fmt.Printf("error when set title: %s\n", err)
-	}
+	_, _ = contitle.SetTitle(title)
 
 	scnr, err := scanner.InitService()
+
 	if err == nil {
 		scanner.RunService(scnr)
-
+		// when stop or break - gracefull shutdown
 		scanner.StopService(scnr)
 	} else {
+		// the logger may not be initialized
 		fmt.Printf("### Init ERROR: %s\n", err.Error())
 	}
 }
