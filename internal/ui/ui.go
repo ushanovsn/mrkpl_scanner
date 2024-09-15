@@ -27,14 +27,15 @@ func StartUIServer(scnr *opt.ScannerObj) {
 	// init routers
 	setRouter(scnr)
 
+	srv := scnr.GetUIObj().GetUIServer()
 	// set server parameters
-	scnr.GetUIObj().GetUIServer().Addr = scnr.GetAddr()
-	scnr.GetUIObj().GetUIServer().Handler = scnr.GetUIObj().GetUIRouter()
+	srv.Addr = scnr.GetAddr()
+	srv.Handler = scnr.GetUIObj().GetUIRouter()
 
 	scnr.GetWG().Add(1)
 	// start server
 	go func() {
-		err := scnr.GetUIObj().GetUIServer().ListenAndServe()
+		err := srv.ListenAndServe()
 		if err != http.ErrServerClosed {
 			log.Out(fmt.Sprintf("Error while WEB UI stopping: %s", err.Error()))
 		}

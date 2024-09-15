@@ -14,6 +14,7 @@ type ScannerObj struct {
 	logger   golanglogger.Golanglogger
 	gDoc     *gdoc.GDocObj
 	uiObj    *UIObj
+	wrkrObj  *WPObj
 	paramObj *params.ParamsObj
 	wg       *sync.WaitGroup
 	stpChan  chan int
@@ -81,7 +82,7 @@ func (obj *ScannerObj) SetGDocSvc(doc *gdoc.GDocObj) {
 //
 // USER INTERFACE //
 
-// Get UI obj to scanner obj
+// Get UI object
 func (obj *ScannerObj) GetUIObj() *UIObj {
 	return obj.uiObj
 }
@@ -89,6 +90,19 @@ func (obj *ScannerObj) GetUIObj() *UIObj {
 // Set UI obj to scanner obj
 func (obj *ScannerObj) SetUIObj(ui *UIObj) {
 	obj.uiObj = ui
+}
+
+//
+// WORKER //
+
+// Get worker object
+func (obj *ScannerObj) GetWPObj() *WPObj {
+	return obj.wrkrObj
+}
+
+// Set worker object
+func (obj *ScannerObj) SetWPObj(wrkr *WPObj) {
+	obj.wrkrObj = wrkr
 }
 
 //

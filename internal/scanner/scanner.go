@@ -5,6 +5,7 @@ import (
 	"github.com/ushanovsn/golanglogger"
 	"mrkpl_scanner/internal/options"
 	"mrkpl_scanner/internal/ui"
+	"mrkpl_scanner/internal/worker"
 	"mrkpl_scanner/pkg/gdoc"
 	"os"
 	"os/signal"
@@ -22,6 +23,9 @@ func RunService(scnr *options.ScannerObj) {
 
 	// start GUI
 	ui.StartUIServer(scnr)
+
+	// stert worker parser
+	worker.StartWorker(scnr)
 
 	/*
 		doc := scnr.GetGDocSvc()
@@ -63,6 +67,8 @@ func StopService(scnr *options.ScannerObj) {
 	if err := ui.StopUIServer(scnr); err != nil {
 		log.Error("Error when stopping WEB UI Server. Err: " + err.Error())
 	}
+
+	worker.StopWorker(scnr)
 
 	// wait stopping goroutines
 	scnr.GetWG().Wait()
@@ -120,6 +126,9 @@ func InitService() (*options.ScannerObj, error) {
 
 	// init and save Web UI object
 	scnr.SetUIObj(ui.NewUI())
+
+	// init and save worker parser
+	scnr.SetWPObj(options.NewWP())
 
 	return &scnr, nil
 }
