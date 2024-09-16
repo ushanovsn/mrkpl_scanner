@@ -14,7 +14,8 @@ type GDocObj struct {
 	auth        credentials
 	sheetId     int64
 	sprdSheetId string
-	sheetName   string
+	// Current connected sheet name
+	sheetName string
 
 	// Client email for autentication (extract from current json-auth file)
 	authClient string
@@ -76,4 +77,9 @@ func (obj *GDocObj) SetGSheetURL(url string) (err error) {
 // Getting the current client email
 func (obj *GDocObj) GetCurClien() string {
 	return obj.authClient
+}
+
+// Getting the current sheet Name
+func (obj *GDocObj) GetCurSheetName() string {
+	return obj.sheetName
 }

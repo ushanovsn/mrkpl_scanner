@@ -14,8 +14,8 @@ func NewGDoc() *GDocObj {
 	return gDoc
 }
 
-// Autentication with google account key
-func (gDoc *GDocObj) GoogleAuth() error {
+// Initializing objects. Autentication with google account key and set tpe sheet
+func (gDoc *GDocObj) GoogleInit() error {
 	var err error
 
 	json_key := gDoc.authKeyFile
@@ -41,19 +41,22 @@ func (gDoc *GDocObj) GoogleAuth() error {
 	}
 
 	gDoc.svc = svc
+
+	// apply current sheet
+	if n, err := googleApplySheet(gDoc); err != nil {
+		return fmt.Errorf("Error when open spreadSheet. Error: %s", err.Error())
+	} else {
+		gDoc.sheetName = n
+	}
+
 	return nil
 }
 
 // Check sheet exist and access, return name of sheet
-func GoogleSetSheet(gDoc *GDocObj, sheetId int64, spreadSheetId string) (name string, err error) {
+func googleApplySheet(gDoc *GDocObj) (name string, err error) {
 	svc := gDoc.svc
-
-	if spreadSheetId == "" {
-		return "", fmt.Errorf("Have No Spreadsheet Data")
-	}
-
-	gDoc.sheetId = sheetId
-	gDoc.sprdSheetId = spreadSheetId
+	spreadSheetId := gDoc.sprdSheetId
+	sheetId := gDoc.sheetId
 
 	// get sheet params
 	resp, err := svc.Spreadsheets.Get(spreadSheetId).Fields("sheets(properties(sheetId,title))").Do()
@@ -89,6 +92,55 @@ func GoogleTest(gDoc *GDocObj) error {
 
 	resp2, err := svc.Spreadsheets.Values.Append(spreadSheetId, sheetName, &recordRow).ValueInputOption("USER_ENTERED").InsertDataOption("INSERT_ROWS").Context(ctx).Do()
 	if err != nil || resp2.HTTPStatusCode != 200 {
+		return err
+	}
+
+	return nil
+}
+
+// read full row from doc
+func (gDoc *GDocObj) ReadRow(rNum uint) (val map[int]string, err error) {
+	spreadSheetId := gDoc.sprdSheetId
+	srv := gDoc.svc
+	//todo change func - using request columns
+	readRange := fmt.Sprintf("%s!A%v:Z%v", gDoc.sheetName, rNum, rNum)
+	resp, err := srv.Spreadsheets.Values.Get(spreadSheetId, readRange).Do()
+	if err != nil {
+		return nil, fmt.Errorf("Unable to retrieve data from sheet: %v", err)
+	}
+
+	// Print the values from the response
+	if len(resp.Values) == 1 {
+		val = make(map[int]string, len(resp.Values[0]))
+		for num, cell := range resp.Values[0] {
+			val[num] = fmt.Sprint(cell)
+		}
+	} else {
+		return nil, fmt.Errorf("Retrived %v rows, must be 1", len(resp.Values))
+	}
+
+	return val, nil
+}
+
+// write values (update) in row
+func (gDoc *GDocObj) UpdateRowVal(rNum uint, val map[int]string) error {
+	spreadSheetId := gDoc.sprdSheetId
+	srv := gDoc.svc
+
+	ctx := context.Background()
+
+	rb := &sheets.BatchUpdateValuesRequest{
+		ValueInputOption: "USER_ENTERED",
+	}
+
+	for k, v := range val {
+		rb.Data = append(rb.Data, &sheets.ValueRange{
+			Range:  fmt.Sprintf("%s!%s%v", gDoc.sheetName, string(rune('A'-1+k)), rNum),
+			Values: [][]interface{}{{v}},
+		})
+	}
+
+	if _, err := srv.Spreadsheets.Values.BatchUpdate(spreadSheetId, rb).Context(ctx).Do(); err != nil {
 		return err
 	}
 

@@ -27,32 +27,6 @@ func RunService(scnr *options.ScannerObj) {
 	// stert worker parser
 	worker.StartWorker(scnr)
 
-	/*
-		doc := scnr.GetGDocSvc()
-		err = doc.GoogleAuth()
-		if err != nil {
-			log.Error(err.Error())
-			return
-		}
-
-		n, err := gdoc.GoogleSetSheet(doc, 0, "")
-		if err != nil {
-			log.Error(err.Error())
-			return
-		}
-
-		fmt.Printf("start with sheet: %s \n", n)
-
-		// scanner START!
-
-		// test
-		dErr := gdoc.GoogleTest(doc)
-		if dErr != nil {
-			log.Error(dErr.Error())
-			return
-		}
-	*/
-
 	// Waiting STOP commands and OS signals for exit
 	exitLine := closeHandler(scnr.GetStopChan())
 	log.Out(exitLine)

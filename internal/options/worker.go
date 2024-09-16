@@ -12,6 +12,8 @@ type WPObj struct {
 	conf WorkerConfig
 	// command channel
 	cmdChnl chan WrkrCMD
+	// status structure
+	stat WorkerStatus
 }
 
 // Create New Worker-Parser object
@@ -46,4 +48,8 @@ func (obj *WPObj) GetCMDChan() *chan WrkrCMD {
 		obj.cmdChnl = make(chan WrkrCMD)
 	}
 	return &obj.cmdChnl
+}
+
+func (obj *WPObj) GetStatus() *WorkerStatus {
+	return &obj.stat
 }

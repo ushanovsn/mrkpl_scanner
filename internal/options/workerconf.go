@@ -13,6 +13,10 @@ type WorkerConfig struct {
 	ReadDocType string `cfg:"read_document_type" descr:"Type of document with incoming data (values: msexcel, googledoc)"`
 	// saving to original doc flag
 	SaveToOrig bool `cfg:"save_in_original" descr:"Save parsed data to original doc"`
+	// range row with data in document
+	LinesProc string `cfg:"lines_range" descr:"Row range in document with data for processing (values like: 2-300, 3- (full doc))"`
+	// request delay
+	ReqDelay float64 `cfg:"request_delay" descr:"Delay between requests to marketplace in seconds(values: 0.2, 1.5, 2, ...)"`
 
 	// file with configuration parameters
 	ConfFile string
@@ -24,6 +28,12 @@ type WorkerConfig struct {
 	PriceCol int `cfg:"price_column" descr:"Column number for saving parsed price"`
 	// error column number
 	ErrCol int `cfg:"error_column" descr:"Column number for saving parse error when occures"`
+}
+
+// Worker current status
+type WorkerStatus struct {
+	status string
+	msg    string
 }
 
 // worker cmd enum
@@ -43,4 +53,10 @@ func (obj *WPObj) SetDefaultConf() {
 	obj.conf.AddressCol = -1
 	obj.conf.PriceCol = -1
 	obj.conf.ErrCol = -1
+}
+
+// Set values to status struct
+func (st *WorkerStatus) Set(status string, msg string) {
+	st.status = status
+	st.msg = msg
 }
