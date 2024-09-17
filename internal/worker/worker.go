@@ -4,6 +4,7 @@ import (
 	//"fmt"
 	"fmt"
 	"mrkpl_scanner/internal/options"
+	"mrkpl_scanner/pkg/mrktparsers/wbparser"
 	"strconv"
 	"strings"
 	"time"
@@ -43,6 +44,7 @@ func runWorker(scnr *options.ScannerObj) {
 	ch := *wrkr.GetCMDChan()
 	stat := wrkr.GetStatus()
 	doc := scnr.GetGDocSvc()
+	wb := wbparser.New()
 
 	var startRow uint
 	var curRow uint
@@ -85,20 +87,25 @@ func runWorker(scnr *options.ScannerObj) {
 			}
 
 			cells, err := doc.ReadRow(curRow)
+			fmt.Printf("cells: %v\n", cells)
 			if err != nil {
 				stat.Set("Stop", "Ошибка чтения строки Google Docs")
 				log.Warn("Error read row gdoc sheet: " + err.Error())
 				continue
 			}
 
+			c := make(map[int]string)
 			// parse data
-			//todo
-			fmt.Printf("TEST!!! parsing value: %v\n", cells)
-
-			c := map[int]string{
-				wrkr.GetConfigPtr().PriceCol:   "100",
-				wrkr.GetConfigPtr().ErrCol:     "No err",
-				wrkr.GetConfigPtr().ErrCol + 1: "",
+			if err := wb.GetItem(cells[wrkr.GetConfigPtr().AddressCol]); err == nil {
+				r, err := wb.ParseItem()
+				if err == nil {
+					c[wrkr.GetConfigPtr().PriceCol] = fmt.Sprint(r.RegularPrice)
+					c[wrkr.GetConfigPtr().ErrCol] = ""
+				} else {
+					c[wrkr.GetConfigPtr().ErrCol] = err.Error()
+				}
+			} else {
+				c[wrkr.GetConfigPtr().ErrCol] = err.Error()
 			}
 
 			// write result into document

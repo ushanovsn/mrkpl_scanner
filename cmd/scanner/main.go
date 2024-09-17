@@ -11,7 +11,7 @@ func main() {
 	title := "### Scanner ###"
 	fmt.Printf("%s\n", title)
 	// no control error
-	_, _ = contitle.SetTitle(title)
+	_ = contitle.SetTitle(title)
 
 	scnr, err := scanner.InitService()
 

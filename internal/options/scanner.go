@@ -16,7 +16,7 @@ type ScannerObj struct {
 	uiObj    *UIObj
 	wrkrObj  *WPObj
 	paramObj *params.ParamsObj
-	wg       *sync.WaitGroup
+	wg       sync.WaitGroup
 	stpChan  chan int
 }
 
@@ -127,10 +127,7 @@ func (obj *ScannerObj) GetParamFName() string {
 
 // Get wait group
 func (obj *ScannerObj) GetWG() *sync.WaitGroup {
-	if obj.wg == nil {
-		obj.wg = &sync.WaitGroup{}
-	}
-	return obj.wg
+	return &obj.wg
 }
 
 // Get stop proc channel
