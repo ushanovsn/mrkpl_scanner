@@ -10,14 +10,14 @@ func parseSheetURL(urlIncom string) (url string, sSheetId string, sheetId int64,
 	ok = false
 
 	// extract URL
-	re, _ := regexp.Compile(`docs.google.com/spreadsheets/d/\S+/edit\S*#gid=\d+\S*`)
+	re := regexp.MustCompile(`docs.google.com/spreadsheets/d/\S+/edit\S*#gid=\d+\S*`)
 	url = re.FindString(urlIncom)
 	if url == "" {
 		return url, sSheetId, sheetId, ok
 	}
 
 	// extract SpreadSheetId
-	re, _ = regexp.Compile(`docs.google.com/spreadsheets/d/(\S+)/edit\S*#gid=\d+\S*`)
+	re = regexp.MustCompile(`docs.google.com/spreadsheets/d/(\S+)/edit\S*#gid=\d+\S*`)
 	sSIdResult := re.FindStringSubmatch(urlIncom)
 	if sSIdResult == nil {
 		return url, sSheetId, sheetId, ok
@@ -25,7 +25,7 @@ func parseSheetURL(urlIncom string) (url string, sSheetId string, sheetId int64,
 	sSheetId = sSIdResult[1]
 
 	// extract SheetId
-	re, _ = regexp.Compile(`docs.google.com/spreadsheets/d/\S+/edit\S*#gid=(\d+)\S*`)
+	re = regexp.MustCompile(`docs.google.com/spreadsheets/d/\S+/edit\S*#gid=(\d+)\S*`)
 	sIdPreResult := re.FindStringSubmatch(urlIncom)
 	if sIdPreResult == nil {
 		return url, sSheetId, sheetId, ok

@@ -113,7 +113,7 @@ func (gDoc *GDocObj) ReadRow(rNum uint) (val map[int]string, err error) {
 	if len(resp.Values) == 1 {
 		val = make(map[int]string, len(resp.Values[0]))
 		for num, cell := range resp.Values[0] {
-			val[num + 1] = fmt.Sprint(cell)
+			val[num+1] = fmt.Sprint(cell)
 		}
 	} else {
 		return nil, fmt.Errorf("Retrived %v rows, must be 1", len(resp.Values))
