@@ -8,6 +8,11 @@ require (
 )
 
 require (
+	github.com/ip2location/ip2location-go/v9 v9.7.0 // indirect
+	lukechampine.com/uint128 v1.2.0 // indirect
+)
+
+require (
 	cloud.google.com/go/auth v0.9.4 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
 	cloud.google.com/go/compute/metadata v0.5.1 // indirect
