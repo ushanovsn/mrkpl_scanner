@@ -12,19 +12,23 @@ import (
 
 // Wildberries price parser main object
 type Parser struct {
-	result  mrktparsers.ParsedData
-	pStatus bool
-	lnk     string
-	reId    regexp.Regexp
-	itemId  string
-	rawData []byte
+	result      mrktparsers.ParsedData
+	pStatus     bool
+	lnk         string
+	urlTemplate string
+	sizeId      string
+	reId        regexp.Regexp
+	reSize      regexp.Regexp
+	itemId      string
+	rawData     []byte
 }
 
 // Get new initialized parser
 func New() *Parser {
 	p := Parser{
-		//re: *regexp.MustCompile(`^((www.)|(https://www.)|(https://))*wildberries.ru/catalog/(\d+)\S*\z`),
-		reId: *regexp.MustCompile(`^((www.)|(https://www.)|(https://))*wildberries.ru/catalog/(\d+)\S*\z`),
+		urlTemplate: "https://card.wb.ru/cards/v2/detail?appType=1&curr=rub&dest=%s&ab_testing=false&nm=%s",
+		reId:        *regexp.MustCompile(`^((www.)|(https://www.)|(https://))*wildberries.ru/catalog/(\d+)\S*\z`),
+		reSize:      *regexp.MustCompile(`^*wildberries.ru/catalog/\d+/\S*\?((\S*\&)*size=(\d+)*)\S*\z`),
 	}
 	return &p
 }
@@ -41,16 +45,25 @@ func (p *Parser) GetItem(lnk string) error {
 	p.pStatus = false
 
 	f := p.reId.FindStringSubmatch(lnk)
-	if len(f) == 0 {
+	if len(f) < 2 {
 		return fmt.Errorf("Incorrect link type, can't find item id")
 	}
 
+	// correct link - save it
 	p.lnk = lnk
 	// need last value
 	p.itemId = f[len(f)-1]
 
+	// check size id in link string
+	s := p.reId.FindStringSubmatch(lnk)
+	if len(s) < 2 {
+		p.sizeId = ""
+	} else {
+		p.sizeId = s[len(s)-1]
+	}
+
 	// url for request data
-	url := fmt.Sprintf("https://card.wb.ru/cards/v2/detail?appType=1&curr=rub&dest=%s&ab_testing=false&nm=%s", "-1576352", p.itemId)
+	url := fmt.Sprintf(p.urlTemplate, "-1576352", p.itemId)
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -75,14 +88,8 @@ func (p *Parser) GetItem(lnk string) error {
 
 // Parse data received from marketplace before
 func (p *Parser) ParseItem() error {
-	fmt.Printf("Parsing data...\n")
-
-	if err := json.Unmarshal(p.rawData, &p); err != nil {
-		return err
-	}
-
-	fmt.Printf("prd: %v \n", p.result)
-	return nil
+	// start unmarshal to structure in parser
+	return json.Unmarshal(p.rawData, &p)
 }
 
 func (p *Parser) UnmarshalJSON(data []byte) error {
@@ -95,12 +102,31 @@ func (p *Parser) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("Parameter product is empty")
 	}
 
-	p.result.Name = j.Data.Products[0].Name
-	p.result.Brand = j.Data.Products[0].Brand
-	p.result.Supplier = j.Data.Products[0].Supplier
-	p.result.RegularPrice = float64(j.Data.Products[0].Sizes[0].Price.Basic) / 100
-	p.result.DiscountPrice = float64(j.Data.Products[0].Sizes[0].Price.Product) / 100.0
-	p.result.IndividualPrice = (float64(j.Data.Products[0].Sizes[0].Price.Product) / 100.0) * 0.97
+	// find id of product
+	pId := 0
+	for k, v := range j.Data.Products {
+		if fmt.Sprint(v.Id) == p.itemId {
+			pId = k
+		}
+	}
+
+	// find sort id of product
+	sId := 0
+	if p.sizeId != "" {
+		for k, v := range j.Data.Products[pId].Sizes {
+			if fmt.Sprint(v.OptionId) == p.sizeId {
+				sId = k
+			}
+		}
+	}
+
+	// save values
+	p.result.Name = j.Data.Products[pId].Name
+	p.result.Brand = j.Data.Products[pId].Brand
+	p.result.Supplier = j.Data.Products[pId].Supplier
+	p.result.RegularPrice = float64(j.Data.Products[pId].Sizes[sId].Price.Basic) / 100
+	p.result.DiscountPrice = float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0
+	p.result.IndividualPrice = (float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0) * 0.97
 
 	p.pStatus = true
 

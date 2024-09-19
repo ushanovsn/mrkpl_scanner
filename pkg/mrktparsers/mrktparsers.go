@@ -38,33 +38,41 @@ const (
 	MTYPE_WILDBERRIES
 	MTYPE_OZON
 	MTYPE_YANDEX_MARKET
+	MTYPE_AVITO
 )
 
 // Defining the type of marketplace
 func MrktRecognize(lnk string) MrktplcType {
-	var exprWb string
+	var expr string
 	var match bool
 	var err error
 
 	// wilberries
-	exprWb = `^(\S*\.)*wildberries.ru\S*\z`
-	match, err = regexp.MatchString(exprWb, lnk)
+	expr = `^(\S*\.)*wildberries.ru\S*\z`
+	match, err = regexp.MatchString(expr, lnk)
 	if match && err == nil {
 		return MTYPE_WILDBERRIES
 	}
 
 	// ozon
-	exprWb = `^(\S*\.)*ozon.ru\S*\z`
-	match, err = regexp.MatchString(exprWb, lnk)
+	expr = `^(\S*\.)*ozon.ru\S*\z`
+	match, err = regexp.MatchString(expr, lnk)
 	if match && err == nil {
 		return MTYPE_OZON
 	}
 
 	// yandex
-	exprWb = `^(\S*\.)*market.yandex.ru\S*\z`
-	match, err = regexp.MatchString(exprWb, lnk)
+	expr = `^(\S*\.)*market.yandex.ru\S*\z`
+	match, err = regexp.MatchString(expr, lnk)
 	if match && err == nil {
 		return MTYPE_YANDEX_MARKET
+	}
+
+	// avito
+	expr = `^(\S*\.)*avito.ru\S*\z`
+	match, err = regexp.MatchString(expr, lnk)
+	if match && err == nil {
+		return MTYPE_AVITO
 	}
 
 	return MTYPE_NO_DEFINED
@@ -79,6 +87,8 @@ func (mt MrktplcType) Name() string {
 		return "OZON"
 	case MTYPE_YANDEX_MARKET:
 		return "YANDEX MARKET"
+	case MTYPE_AVITO:
+		return "AVITO"
 	case MTYPE_NO_DEFINED:
 		fallthrough
 	default:
