@@ -69,8 +69,10 @@ func (p *Parser) GetItem(lnk string) error {
 	if err != nil {
 		return fmt.Errorf("Error when Request data: %s", err.Error())
 	} else if res.StatusCode > 299 {
+		res.Body.Close()
 		return fmt.Errorf("Error. Get status code: %v", res.StatusCode)
 	}
+	defer res.Body.Close()
 
 	// check data type
 	if c := res.Header.Get("Content-Type"); !strings.Contains(c, "application/json") {
