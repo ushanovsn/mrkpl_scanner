@@ -36,3 +36,4 @@ coverage.out
 *.conf
 *.prm
 client_secret_*.json
+scanner
