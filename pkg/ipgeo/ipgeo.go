@@ -6,21 +6,19 @@ type IpLocation struct {
 	CountryName string
 	Region      string
 	City        string
-	Latitude    string
-	Longitude   string
+	Latitude    float64
+	Longitude   float64
 }
 
 // Requests to some free internet services, returns text body with IP
 func GetIp() (string, error) {
-
-	return "", nil
+	return getIp()
 }
 
 // Requests to some free internet services, returns json body with IP and Location
 func GetIpLocation() (IpLocation, error) {
 	// returns structure
-
-	return IpLocation{}, nil
+	return getIpLocation()
 }
 
 // Check path specified GEO database, return error when unsuccessfull.
@@ -39,6 +37,5 @@ func LoadLocationDb() error {
 // Read presaved GEO database. If path is empty - uses standart name of file.
 func GetLocationByIp(path string) (IpLocation, error) {
 	// returns structure
-
-	return IpLocation{}, nil
+	return getLocationByIp(path)
 }

@@ -8,18 +8,22 @@ import (
 
 func getLocationByIp(path string) (IpLocation, error) {
 
-	db, err := ip2location.OpenDB("./IP2LOCATION-LITE-DB11.BIN")
+	// https://www.ip2location.com/developers/go
+	// https://github.com/renfei/ip2location
+
+	loc := IpLocation{}
+	db, err := ip2location.OpenDB(path + "./IP2LOCATION-LITE-DB11.BIN")
 
 	if err != nil {
 		fmt.Print(err)
-		return
+		return loc, err
 	}
-	ip := "85.95.178.65"
+	ip := "8.8.8.8"
 	results, err := db.Get_all(ip)
 
 	if err != nil {
 		fmt.Print(err)
-		return
+		return loc, err
 	}
 
 	fmt.Printf("country_short: %s\n", results.Country_short)
@@ -50,4 +54,6 @@ func getLocationByIp(path string) (IpLocation, error) {
 	fmt.Printf("api version: %s\n", ip2location.Api_version())
 
 	db.Close()
+
+	return loc, err
 }
