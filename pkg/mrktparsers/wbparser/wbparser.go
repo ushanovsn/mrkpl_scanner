@@ -20,6 +20,8 @@ type Parser struct {
 	reId        regexp.Regexp
 	reSize      regexp.Regexp
 	itemId      string
+	location	int
+	discount	float64
 	rawData     []byte
 }
 
@@ -31,6 +33,92 @@ func New() *Parser {
 		reSize:      *regexp.MustCompile(`^*wildberries.ru/catalog/\d+/\S*\?((\S*\&)*size=(\d+)*)\S*\z`),
 	}
 	return &p
+}
+
+// Get new initialized parser
+func (p *Parser) SetLocation() error {
+	// url for request data
+	url := fmt.Sprintf("https://user-geo-data.wildberries.ru/get-geo-info?currency=RUB")
+
+	res, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("Error when Request data: %s", err.Error())
+	} else if res.StatusCode > 299 {
+		res.Body.Close()
+		return fmt.Errorf("Error. Get status code: %v", res.StatusCode)
+	}
+	defer res.Body.Close()
+
+
+	// check data type
+	if c := res.Header.Get("Content-Type"); !strings.Contains(c, "application/json") {
+		return fmt.Errorf("Received wrong content type: %v", c)
+	}
+
+
+	// read json body
+	rawData, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("Error reading body of response: %s", err.Error())
+	}
+
+	var jData struct {
+		Address string `json:"address"`
+		Ip string `json:"ip"`
+		Currency string `json:"currency"`
+		Locale string `json:"locale"`
+		Destinations []int `json:"destinations"`
+	}
+
+	err = json.Unmarshal(rawData, &jData)
+	if err != nil {
+		return fmt.Errorf("Error unmarshalling json: %s", err.Error())
+	}
+
+	p.location = jData.Destinations[len(jData.Destinations)-1]
+	return nil
+}
+
+// Get current discount
+func (p *Parser) SetCurDiscount() error {
+	// url for request data
+	url := "https://static-basket-01.wb.ru/vol1/global-payment/default-payment.json"
+
+	res, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("Error when Request data: %s", err.Error())
+	} else if res.StatusCode > 299 {
+		res.Body.Close()
+		return fmt.Errorf("Error. Get status code: %v", res.StatusCode)
+	}
+	defer res.Body.Close()
+
+
+	// check data type
+	if c := res.Header.Get("Content-Type"); !strings.Contains(c, "application/json") {
+		return fmt.Errorf("Received wrong content type: %v", c)
+	}
+
+
+	// read json body
+	rawData, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("Error reading body of response: %s", err.Error())
+	}
+
+	var jData struct {
+		Data  []struct {
+				Discount float64 `json:"discount_value"`
+			} `json:"data"`
+	}
+
+	err = json.Unmarshal(rawData, &jData)
+	if err != nil {
+		return fmt.Errorf("Error unmarshalling json: %s", err.Error())
+	}
+
+	p.discount = jData.Data[0].Discount
+	return nil
 }
 
 // Get result of parsing
@@ -63,7 +151,7 @@ func (p *Parser) GetItem(lnk string) error {
 	}
 
 	// url for request data
-	url := fmt.Sprintf(p.urlTemplate, "-1576352", p.itemId)
+	url := fmt.Sprintf(p.urlTemplate, p.location, p.itemId)
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -128,7 +216,7 @@ func (p *Parser) UnmarshalJSON(data []byte) error {
 	p.result.Supplier = j.Data.Products[pId].Supplier
 	p.result.RegularPrice = float64(j.Data.Products[pId].Sizes[sId].Price.Basic) / 100
 	p.result.DiscountPrice = float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0
-	p.result.IndividualPrice = (float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0) * 0.97
+	p.result.IndividualPrice = (float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0) * (100 - (p.discount/100))
 
 	p.pStatus = true
 
