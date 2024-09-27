@@ -22,8 +22,19 @@
             }
 
         function updateFilename(path) {
-          var name = extractFilename(path);
-          document.getElementById('filename').value = name;
+            var name = extractFilename(path);
+            document.getElementById('filename').value = name;
+        }
+
+        function disablingElem(chBox) {
+            if (chBox.checked) {
+                document.getElementById('fconf').disabled = true
+                document.getElementById('gconf').disabled = false
+            } else {
+                document.getElementById('fconf').disabled = false
+                document.getElementById('gconf').disabled = true
+            }
+            document.getElementById('filepath').value = chBox.checked
         }
     </script>
 
@@ -38,9 +49,11 @@
 
     <p>
         <div class="base">
+            <input type="checkbox" id="checkbox" name="checkbox" onclick="disablingElem(this)" checked="true" />
+
             <div class="gconf_list">
                 <form id="gform" method="POST" action="/gparams" enctype="multipart/form-data">
-                    <div class="width100">
+                    <div class="width100" name="gconf">
                         <label>{{.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
                         <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.GPageURL}}"/><br><br>
                         <label>{{.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
@@ -48,6 +61,10 @@
                         <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
                         <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
                         <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                    </div>
+                    <div class="fconf_list" name="fconf">
+                        <label>Путь к файлу:</label>
+                        <input type="text" id="filepath" placeholder="./file.xls" name="file_addr"/><br><br>
                     </div>
                 </form>
                 <button autofocus type="submit" form="gform" value="apply" >Отправить</button>
