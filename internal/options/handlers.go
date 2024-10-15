@@ -13,3 +13,4 @@ type GParamsPageData struct {
 type PParamsPageData struct {
 	Title string
 }
+

@@ -1,31 +1,260 @@
+/******************************************************************************************************************************/
+/*                                              Common base                                                                   */
+/******************************************************************************************************************************/
 
-html {
-  box-sizing: border-box;
+@font-face {
+  font-family: "PT Sans";
+  font-style: normal;
+  font-weight: normal;
+  src: url(/assets/font/PT_Sans-Web-Regular.woff2) format('woff2');
 }
 
+:root {
+  /* Title-Header */
+  --navi-header-text: #18171c;
+  /* Navigation menu - Tabs */
+  --navi-tab-background: #f3f3f3;
+  --navi-tab-border: #e7e7e7;
+  --navi-tab-active: #182978;
+  --navi-tab-hovered: #ddd;
+  /* Drop-down menu elements */
+  --navi-menu-shadow: rgba(0,0,0,0.2);
+  --navi-menu-background: #f9f9f9;
+  --navi-menu-active: #6688cc;
+  --navi-menu-hovered: #f1f1f1;
+  /* Menu and tabs text */
+  --navi-text: #666;
+  --navi-text-active: white;
+  --navi-text-hovered: black;
+  
+  /* Links */
+  --links: midnightblue;
+
+  /* Base panel as Background */
+  --panel-background: #8ebbe0;
+  --panel-background-border: gray;
+
+  /* Base text */
+  --text: black;
+
+  /* Warnings block */
+  --warning-border: red;
+  --warning-text: brown;
+  --warning-hovered: rgba(255, 225, 225, 0.700);
+}
+
+
+
+
+
+/* Reset style for all elements page */
 *, *::before, *::after {
   box-sizing: inherit;
   margin: 0;
   padding: 0;
+  color: var(--text)
 }
 
 
-header h2 {
-  margin-top: 1%;
-  text-align: center;
+/* Base style params */
+html, body {
+  box-sizing: border-box;
+  font-family: "PT Sans", sans-serif;
+  height: 100%;
 }
+
+
+/* Base links style */
+a, a:visited, a:link{
+  color: var(--links);
+}
+
+
+
+
+
+
+
+/******************************************************************************************************************************/
+/*                                               Navigation                                                                   */
+/******************************************************************************************************************************/
+
+/* Navigation titles */
+.navi-title {
+  padding: 5px;
+  justify-content: center;
+  text-align:center;
+  color: var(--navi-header-text)
+}
+
+.navi-title hr {
+background-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.2), transparent);
+border: 0;
+height: 1px;
+margin: auto;
+width: 50%
+} 
+
+
+/* Navigation menu */
+ul.navi {
+    display: flex;
+    justify-content:center;
+
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 1px solid var(--navi-tab-border);
+    background-color: var(--navi-tab-background);
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navi .inner-fill-area {
+    overflow: hidden;
+}
+
+.navi li {
+    float: left;
+    font-weight: bold;
+}
+
+
+/* Navigation menu elements (links) and elements with dropdown lists */
+.navi a, .navi .dropbtn {
+    display: inline-block;
+    color: var(--navi-text);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+
+.navi a:hover, .navi .dropdown:hover .dropbtn {
+    background-color: var(--navi-tab-hovered);
+    color: var(--navi-text-hovered);
+}
+
+.navi li.dropdown {
+    display: inline-block;
+}
+
+
+/* Navigation dropdowns menu elements (links) */
+.navi .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--navi-menu-background);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px var(--navi-menu-shadow);
+    z-index: 1001;
+    overflow: visible;
+    font-weight: normal;
+}
+
+.navi .dropdown-content a {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.navi .dropdown-content a:hover {
+    background-color: var(--navi-menu-hovered);
+    color: var(--navi-text-hovered);
+}
+
+.navi .dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/* Navigation selected (active/current) element */
+.navi .active {
+    color: var(--navi-text-active);
+    background-color: var(--navi-tab-active);
+}
+
+.navi .dropdown-content .active {
+    background-color: var(--navi-menu-active);
+}
+
+
+/*****************************************************/
+
+
+
+
+
+
+
+
+
+
+/******************************************************************************************************************************/
+/*                                               Footer                                                                       */
+/******************************************************************************************************************************/
+
+
+
+footer {
+  margin: 20px;
+}
+
+
+/*****************************************************/
+
+
+
+
+
+
+
+
+
+
+
+/******************************************************************************************************************************/
+/*                                               Main                                                                         */
+/******************************************************************************************************************************/
+
+
+main {
+  margin: 10px;
+}
+
+
+
+/*****************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .base {
   align-items: center;
   display: flex;
-  background-color: rgb(142, 187, 224);
+  background-color: var(--panel-background);
   position: relative;
   width: 80%;
   height: 250px;
   margin: 20px auto;
-  border: 1px solid gray;
+  border: 1px solid var(--panel-background-border);
 }
+
 
 
 #index {
@@ -45,8 +274,8 @@ label {
   text-align: center;
 }
 
-.conf_list a:visited, a:link {
-	color: midnightblue;
+.conf_list a:visited, .conf_list a:link, .conf_list a {
+  color: var(--links)
 }
 
 .conf_list a:hover {
@@ -83,13 +312,23 @@ label {
 .warningslines {
   width: 80%;
   margin: 20px auto;
-  border: 1px solid red;
+  border: 1px solid var(--warning-border);
   border-radius: 10px;
   font-weight: bold;
-  color: brown;
+  color: var(--warning-text);
   padding: 1% 1% 1% 2%;
 }
 
 .warningslines ul li:hover  {
-  background-color: rgba(255, 225, 225, 0.700);
+  background-color: var(--warning-hovered);
 }
+
+
+
+
+
+
+
+
+
+

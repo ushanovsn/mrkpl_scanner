@@ -11,15 +11,24 @@ import (
 func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
+		tmpl := scnr.GetUIObj().GetUIHTMLTemplates()
 
 		// struct for index page
 		data := struct {
 			Title                   string
+			NaviMenu				[]opt.NaviMenu
+			ActiveMenu				opt.NaviActiveMenu
 			GoogleParamPage         string
 			ParserParamPage         string
 			ScannerParserStatusPage string
 		}{
 			Title:                   opt.DefUIPageTitle,
+			NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
+			ActiveMenu: opt.NaviActiveMenu{
+				ActiveTabVal: "/",
+				ActiveDMenuVal: "",
+				PageDescription: "Главная",
+			},
 			GoogleParamPage:         "gparams",
 			ParserParamPage:         "pparams",
 			ScannerParserStatusPage: "status",
@@ -29,21 +38,14 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 		header := http.StatusOK
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
-		// load template file
-		tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/index.html")
 
-		if err != nil {
-			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
-			header = http.StatusInternalServerError
-			w.WriteHeader(header)
-		} else {
-			// OK. Processing template - replace\substitute values in template and send to front
-			w.WriteHeader(header)
-			err = tmpl.Execute(w, data)
-			if err != nil {
-				log.Error(fmt.Sprintf("Error executing template: %v\n", err.Error()))
-			}
+		// OK. Processing template - replace\substitute values in template and send to front
+		w.WriteHeader(header)
+		
+		if err := tmpl.ExecuteTemplate(w, "index", data); err != nil {
+			log.Error(fmt.Sprintf("Error executing template: %v\n", err.Error()))
 		}
+
 	})
 }
 

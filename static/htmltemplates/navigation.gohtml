@@ -1,0 +1,67 @@
+{{define "navigation"}}
+  <div class="navi-title">
+    <h2>
+      {{.Title}}
+    </h2>
+    <hr>
+    <p> {{.ActiveMenu.PageDescription}} </p>
+  </div>
+  <ul class="navi">
+    <div class="inner-fill-area">
+    {{$activeVal := .ActiveMenu}}
+    {{- range .NaviMenu -}}
+        {{- if .ItmIsMenu}}
+            <li class="dropdown">
+              <a href="javascript:void(0)" class="dropbtn">{{.ItmName}} ↓</a>
+              <div class="dropdown-content">
+             {{range .ItmMenu}}
+                <a {{if (eq .ItmLink $activeVal.ActiveDMenuVal)}}class="active"{{end}} href='{{.ItmLink}}'>{{.ItmName}}</a>
+              {{- end}}
+              </div>
+            </li>
+        {{else}}
+            <li><a {{if (eq .ItmLink $activeVal.ActiveTabVal)}}class="active"{{end}} href='{{.ItmLink}}'>{{.ItmName}}</a></li>
+        {{- end}}
+    {{- end}}
+
+    </div>
+  </ul>
+{{end}}
+
+
+
+<!-- Base structure
+  <div class="navi-title">
+    <h2>
+      {{.Title}}
+    </h2>
+    <hr>
+    <p> #Наименование </p>
+  </div>
+  <ul class="navi">
+    <div class="inner-fill-area">
+      <li><a href="/" class="active">Главная</a></li>
+      <li><a href="/">Статус</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Конфигурация ↓</a>
+        <div class="dropdown-content">
+          <a href="/">Основные параметры</a>
+          <a href="/">Wildberries</a>
+          <a href="/">Ozon</a>
+          <a href="/">Yandex Market</a>
+          <a href="/">Avito</a>
+          <a href="/">Уведомления</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Задачи ↓</a>
+        <div class="dropdown-content">
+          <a href="/">Сканирование</a>
+          <a href="/" class="active">Мониторинг</a>
+          <a href="/">Поиск</a>
+        </div>
+      </li>
+      <li><a href="/">Лог</a></li>
+    </div>
+  </ul>
+  -->

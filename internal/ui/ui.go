@@ -6,6 +6,7 @@ import (
 	"mrkpl_scanner/internal/handlers"
 	opt "mrkpl_scanner/internal/options"
 	"net/http"
+	"html/template"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -16,6 +17,8 @@ func NewUI() *opt.UIObj {
 	ui.SetDefaultUI()
 	ui.SetUIServer(&http.Server{})
 	ui.SetUIRouter(chi.NewRouter())
+	ui.SetUINaviMenu(opt.GetNavigationMenu())
+	ui.SetUIHTMLTemplates(template.Must(template.ParseGlob("./static/htmltemplates/*")))
 	return ui
 }
 
