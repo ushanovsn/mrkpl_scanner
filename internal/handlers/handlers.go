@@ -18,9 +18,6 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 			Title                   string
 			NaviMenu				[]opt.NaviMenu
 			ActiveMenu				opt.NaviActiveMenu
-			GoogleParamPage         string
-			ParserParamPage         string
-			ScannerParserStatusPage string
 		}{
 			Title:                   opt.DefUIPageTitle,
 			NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
@@ -29,9 +26,6 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 				ActiveDMenuVal: "",
 				PageDescription: "Главная",
 			},
-			GoogleParamPage:         "gparams",
-			ParserParamPage:         "pparams",
-			ScannerParserStatusPage: "status",
 		}
 
 		// base headers
@@ -49,20 +43,20 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	})
 }
 
-// Processor for page with Google parameters
-func GParamsPage(scnr *opt.ScannerObj) http.HandlerFunc {
+// Processor for page with Scan parameters
+func ParamsScanPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
 
 		// execute template and apply data
-		if err := writeGParams(w, scnr, nil); err != nil {
+		if err := writeParamsScan(w, scnr, nil); err != nil {
 			log.Error(err.Error())
 		}
 	})
 }
 
-// Processor for update Google parameters
-func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
+// Processor for update Scan parameters
+func ParamsScanPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
 		// errors for show at page
@@ -74,7 +68,7 @@ func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 		if err := r.ParseMultipartForm(maxSize); err != nil {
 			log.Error("Error when parsing form getting the file. Error: " + err.Error())
 			errList = append(errList, "Ошибка обработки загруженных данных")
-			err := writeGParams(w, scnr, errList)
+			err := writeParamsScan(w, scnr, errList)
 			if err != nil {
 				log.Error(err.Error())
 			}
@@ -93,7 +87,7 @@ func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 		} else {
 			defer file.Close()
 
-			log.Info("Page \"GParams\" uploaded the file: " + handler.Filename)
+			log.Info("Page \"ParamsScan\" uploaded the file: " + handler.Filename)
 			log.Debug(fmt.Sprintf("Uploaded File Size: %v", handler.Size))
 			log.Debug(fmt.Sprintf("MIME Header: %v", handler.Header))
 
@@ -140,7 +134,7 @@ func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 		// Get text value of URL
 		val := r.FormValue("sheeturl")
 
-		log.Debug("Page \"GParams\" uploaded the URL: " + val)
+		log.Debug("Page \"ParamsScan\" uploaded the URL: " + val)
 
 		if val == "" {
 			log.Warn("Uploaded URL is empty")
@@ -160,53 +154,60 @@ func GParamsPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 		}
 
 		// execute template and apply data
-		if err := writeGParams(w, scnr, errList); err != nil {
+		if err := writeParamsScan(w, scnr, errList); err != nil {
 			log.Error(err.Error())
 		}
 	})
 }
 
-// Main writer for http page with Google Params. Processing data and execute base template
-func writeGParams(w http.ResponseWriter, scnr *opt.ScannerObj, errList []string) error {
+// Main writer for http page with Scan Params. Processing data and execute base template
+func writeParamsScan(w http.ResponseWriter, scnr *opt.ScannerObj, errList []string) error {
+	tmpl := scnr.GetUIObj().GetUIHTMLTemplates()
 
-	// prepare data values for page
-	data := opt.GParamsPageData{
-		Title:      opt.DefUIPageTitle,
-		GPageURL:   scnr.GetGDocSvc().GetGSheetURL(),
-		AuthClient: scnr.GetGDocSvc().GetCurClien(),
+	// struct for Scanner Parameters page
+	data := struct {
+		Title                   string
+		NaviMenu				[]opt.NaviMenu
+		ActiveMenu				opt.NaviActiveMenu
+		ParamsScanData			opt.ParamsScanPageData
+	}{
+		Title:                   opt.DefUIPageTitle,
+		NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
+		ActiveMenu: opt.NaviActiveMenu{
+			ActiveTabVal: "/task_param",
+			ActiveDMenuVal: "/task_param_scan",
+			PageDescription: "Параметры задачи \"Сканирование\"",
+		},
+		ParamsScanData: opt.ParamsScanPageData{
+			GPageURL:   scnr.GetGDocSvc().GetGSheetURL(),
+			AuthClient: scnr.GetGDocSvc().GetCurClien(),
+		},
 	}
+
 
 	// check current values and set indicators
-	if data.GPageURL != "" {
-		data.GPageURLOkPref = "✔️"
+	if data.ParamsScanData.GPageURL != "" {
+		data.ParamsScanData.GPageURLOkPref = "✔️"
 	} else {
-		data.GPageURLOkPref = "❌"
-		data.ErrLog = append(data.ErrLog, "В системе не задан URL адрес Google-документа")
+		data.ParamsScanData.GPageURLOkPref = "❌"
+		data.ParamsScanData.ErrLog = append(data.ParamsScanData.ErrLog, "В системе не задан URL адрес Google-документа")
 	}
-	if data.AuthClient != "" {
-		data.AuthClientOkPref = "✔️"
+	if data.ParamsScanData.AuthClient != "" {
+		data.ParamsScanData.AuthClientOkPref = "✔️"
 	} else {
-		data.AuthClientOkPref = "❌"
-		data.ErrLog = append(data.ErrLog, "В системе отсутствуют аутентификационные данные Google-аккаунта")
+		data.ParamsScanData.AuthClientOkPref = "❌"
+		data.ParamsScanData.ErrLog = append(data.ParamsScanData.ErrLog, "В системе отсутствуют аутентификационные данные Google-аккаунта")
 	}
 
-	data.ErrLog = append(data.ErrLog, errList...)
+	data.ParamsScanData.ErrLog = append(data.ParamsScanData.ErrLog, errList...)
 
-	header := http.StatusOK
 	w.Header().Add("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 
-	tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/google_params_page.html")
+	err := tmpl.ExecuteTemplate(w, "task_param_scan", data)
 
 	if err != nil {
-		err = fmt.Errorf("Error while loading HTML template file: %v\n", err.Error())
-		header = http.StatusInternalServerError
-		w.WriteHeader(header)
-	} else {
-		w.WriteHeader(header)
-		err = tmpl.Execute(w, data)
-		if err != nil {
-			err = fmt.Errorf("Error executing template: %v\n", err.Error())
-		}
+		err = fmt.Errorf("Error executing template: %v\n", err.Error())
 	}
 
 	return err
@@ -242,26 +243,31 @@ func PParamsPage(scnr *opt.ScannerObj) http.HandlerFunc {
 func StatusPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
-		data := opt.PParamsPageData{
-			Title: opt.DefUIPageTitle,
+		tmpl := scnr.GetUIObj().GetUIHTMLTemplates()
+
+		// struct for current page
+		data := struct {
+			Title                   string
+			NaviMenu				[]opt.NaviMenu
+			ActiveMenu				opt.NaviActiveMenu
+		}{
+			Title:                   opt.DefUIPageTitle,
+			NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
+			ActiveMenu: opt.NaviActiveMenu{
+				ActiveTabVal: "/status",
+				ActiveDMenuVal: "",
+				PageDescription: "Статус процессов сервера",
+			},
 		}
 
-		header := http.StatusOK
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
 
-		tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/status.html")
-
+		err := tmpl.ExecuteTemplate(w, "status", data)
+	
 		if err != nil {
-			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
-			header = http.StatusInternalServerError
-			w.WriteHeader(header)
-		} else {
-			w.WriteHeader(header)
-			err = tmpl.Execute(w, data)
-			if err != nil {
-				log.Error(fmt.Sprintf("Error executing template: %v\n", err.Error()))
-			}
+			log.Error("Error executing status template: " + err.Error())
 		}
-
+	
 	})
 }

@@ -1,8 +1,7 @@
 package options
 
-// Data for Google parameters page template
-type GParamsPageData struct {
-	Title            string
+// Data for Scan parameters page template
+type ParamsScanPageData struct {
 	GPageURL         string
 	GPageURLOkPref   string
 	AuthClient       string

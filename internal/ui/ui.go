@@ -58,9 +58,9 @@ func setRouter(scnr *opt.ScannerObj) {
 	// set handlers for routes
 	route.Route("/", func(r chi.Router) {
 		r.Get("/", handlers.IndexPage(scnr))
-		r.Route("/gparams", func(r chi.Router) {
-			r.Get("/", handlers.GParamsPage(scnr))
-			r.Post("/", handlers.GParamsPageUpload(scnr))
+		r.Route("/task_param_scan", func(r chi.Router) {
+			r.Get("/", handlers.ParamsScanPage(scnr))
+			r.Post("/", handlers.ParamsScanPageUpload(scnr))
 		})
 		r.Route("/pparams", func(r chi.Router) {
 			r.Get("/", handlers.PParamsPage(scnr))

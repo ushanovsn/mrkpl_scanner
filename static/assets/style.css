@@ -33,6 +33,10 @@
   /* Base panel as Background */
   --panel-background: #8ebbe0;
   --panel-background-border: gray;
+  --panel-inner-form: #a7cceb;
+  --panel-inner-tab-noactive: #ddd;
+  --panel-inner-text-noactive: #666;
+  --panel-inner-text: black;
 
   /* Base text */
   --text: black;
@@ -52,7 +56,7 @@
   box-sizing: inherit;
   margin: 0;
   padding: 0;
-  color: var(--text)
+  color: var(--text);
 }
 
 
@@ -61,6 +65,7 @@ html, body {
   box-sizing: border-box;
   font-family: "PT Sans", sans-serif;
   height: 100%;
+  min-width: 700px;
 }
 
 
@@ -84,7 +89,7 @@ a, a:visited, a:link{
   padding: 5px;
   justify-content: center;
   text-align:center;
-  color: var(--navi-header-text)
+  color: var(--navi-header-text);
 }
 
 .navi-title hr {
@@ -92,7 +97,7 @@ background-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.2), tra
 border: 0;
 height: 1px;
 margin: auto;
-width: 50%
+width: 50%;
 } 
 
 
@@ -201,7 +206,7 @@ ul.navi {
 
 
 footer {
-  margin: 20px;
+  margin: 10px;
 }
 
 
@@ -224,9 +229,105 @@ footer {
 
 main {
   margin: 10px;
+  display: block;
 }
 
 
+/*****************************************************/
+
+
+
+/******************************************************************************************************************************/
+/*                                           Backplate and elements                                                           */
+/******************************************************************************************************************************/
+
+
+.backplate {
+  align-items: center;
+  background-color: var(--panel-background);
+  position: relative;
+  width: 80%;
+  margin: 20px auto;
+  padding: 10px;
+  border: 1px solid var(--panel-background-border);
+}
+
+
+/* labels style */
+.backplate label {
+  font-style: italic;
+}
+
+
+
+/* Checkbox element style */
+.backplate .chBox {
+  padding: 5px;
+}
+
+.backplate .chBox label{
+  padding-left: 0.2em;
+}
+
+.backplate .chBox input[type="checkbox"]{
+  transform: scale(1.6);
+}
+
+
+/*****************************************************/
+
+
+
+
+
+
+
+
+/******************************************************************************************************************************/
+/*                                           Tabs panel                                                                       */
+/******************************************************************************************************************************/
+
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2rem auto;
+}
+
+.tabs > label {
+  background: var(--panel-inner-tab-noactive);
+  color: var(--panel-inner-text-noactive);
+  cursor: pointer;
+  display: block;
+  font-weight: 600;
+  margin-right: 0.3rem;
+  padding: 1rem 2rem;
+  transition: background ease 0.3s;
+  width: auto;
+  order: 1;
+}
+
+.tabs .tab-content {
+  background: var(--panel-inner-form);
+  display: none;
+  flex-grow: 1;
+  padding: 1rem;
+  width: 100%;
+  order: 99;
+}
+
+.tabs input[type="radio"] {
+  display: none;
+}
+
+.tabs input[type="radio"]:checked + label {
+  background: var(--panel-inner-form);
+  color: var(--panel-inner-text);
+}
+
+.tabs input[type="radio"]:checked + label + .tab-content {
+  display: block;
+}
 
 /*****************************************************/
 
@@ -243,28 +344,12 @@ main {
 
 
 
-
-.base {
-  align-items: center;
-  display: flex;
-  background-color: var(--panel-background);
-  position: relative;
-  width: 80%;
-  height: 250px;
-  margin: 20px auto;
-  border: 1px solid var(--panel-background-border);
-}
-
-
-
 #index {
   justify-content: center;
   height: 200px;
 }
 
-label {
-  font-style: italic;
-}
+
 .conf_list {
   margin: 10px;
 }
@@ -289,7 +374,7 @@ label {
   width: 100%;
   /*border: 1px solid red;*/
 
-  display: grid;
+  display: flex;
   place-items: center;
 }
 
@@ -322,9 +407,6 @@ label {
 .warningslines ul li:hover  {
   background-color: var(--warning-hovered);
 }
-
-
-
 
 
 

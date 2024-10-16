@@ -47,21 +47,21 @@ func GetNavigationMenu() []NaviMenu {
 			},
 		},
 		{
-			ItmName: "Задачи",
-			ItmLink: "/task",
+			ItmName: "Параметры задач",
+			ItmLink: "/task_param",
 			ItmIsMenu: true,
 			ItmMenu: []NaviDropMenu{
 				{
 					ItmName: "Сканирование",
-					ItmLink: "/task_scan",
+					ItmLink: "/task_param_scan",
 				},
 				{
 					ItmName: "Мониторинг",
-					ItmLink: "/task_monitor",
+					ItmLink: "/task_param_monitor",
 				},
 				{
 					ItmName: "Поиск",
-					ItmLink: "/task_search",
+					ItmLink: "/task_param_search",
 				},
 			},
 		},

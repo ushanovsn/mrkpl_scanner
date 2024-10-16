@@ -12,7 +12,7 @@
     {{- range .NaviMenu -}}
         {{- if .ItmIsMenu}}
             <li class="dropdown">
-              <a href="javascript:void(0)" class="dropbtn">{{.ItmName}} ↓</a>
+              <a href="javascript:void(0)" class="dropbtn{{if (eq .ItmLink $activeVal.ActiveTabVal)}} active{{end}}">{{.ItmName}} ↓</a>
               <div class="dropdown-content">
              {{range .ItmMenu}}
                 <a {{if (eq .ItmLink $activeVal.ActiveDMenuVal)}}class="active"{{end}} href='{{.ItmLink}}'>{{.ItmName}}</a>
