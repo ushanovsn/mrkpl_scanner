@@ -41,6 +41,16 @@
   /* Base text */
   --text: black;
 
+  /* Buttons */
+  --btn-text: white;
+  --btn-body: #3775dd;
+  --btn-shadow: #21487f;
+  --btn-hover: #182978;
+  --btn-active: #2f599e;
+  --btn-disabled: #6c87b5;
+
+
+
   /* Warnings block */
   --warning-border: red;
   --warning-text: brown;
@@ -237,6 +247,12 @@ main {
 
 
 
+
+
+
+
+
+
 /******************************************************************************************************************************/
 /*                                           Backplate and elements                                                           */
 /******************************************************************************************************************************/
@@ -250,6 +266,10 @@ main {
   margin: 20px auto;
   padding: 10px;
   border: 1px solid var(--panel-background-border);
+}
+
+.backplate .sbmtBtn {
+  margin: 10px 50px;
 }
 
 
@@ -272,6 +292,8 @@ main {
 .backplate .chBox input[type="checkbox"]{
   transform: scale(1.6);
 }
+
+
 
 
 /*****************************************************/
@@ -330,6 +352,59 @@ main {
 }
 
 /*****************************************************/
+
+
+
+
+
+
+
+
+
+
+
+/******************************************************************************************************************************/
+/*                                           Submit button                                                                    */
+/******************************************************************************************************************************/
+
+.sbmtBtn {
+	display: inline-block;	
+	box-sizing: border-box;
+	padding: 0 20px;
+	margin: 0 15px 15px 0;
+	outline: none;
+	border: none;  
+	border-radius: 4px;
+	height: 32px;
+	line-height: 32px;
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration: none;
+	color: var(--btn-text);
+	background-color: var(--btn-body);
+	box-shadow: 0 2px var(--btn-shadow);
+	cursor: pointer;
+	user-select: none;
+	appearance: none;
+	touch-action: manipulation;  
+	vertical-align: top;
+}
+.sbmtBtn:hover {
+	background-color: var(--btn-hover);
+}
+.sbmtBtn:active {
+	background-color: var(--btn-active) !important;
+}
+.sbmtBtn:focus-visible {
+	box-shadow: 0 0 0 3px;
+}
+.sbmtBtn:disabled {
+	background-color: var(--btn-disabled);
+	pointer-events: none;
+}
+
+/*****************************************************/
+
 
 
 
@@ -407,6 +482,15 @@ main {
 .warningslines ul li:hover  {
   background-color: var(--warning-hovered);
 }
+
+
+
+
+
+
+
+
+
 
 
 

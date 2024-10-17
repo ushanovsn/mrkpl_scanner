@@ -37,126 +37,117 @@
             var div = document.getElementById('saving_data');
             if (chBox.checked) {
                 div.style.display = 'none';
-                document.getElementById('sourceequal-flag').value = "true"
             } else {
                  div.style.display = 'block'
-                 document.getElementById('sourceequal-flag').value = "false"
             }
         }
     </script>
 
     <main>
     
-
-
-        <div id="source_data" class="backplate">
-            <p><h3> Источник данных:</h3></p>
-            <div class="chBox">
-                <input type="checkbox" id="sourceequal" onclick="hideOut(this)" checked="true"/>
-                <label>Сохранять результат парсинга в исходном документе</label>
-            </div>
+        <div class="backplate">
 
             <form id="gform_source" method="POST" action="/task_param_scan" enctype="multipart/form-data">
 
-                <div class="tabs">
-                    <input type="radio" name="tabs" id="tab1" checked="checked">
-                    <label for="tab1">Таблица Google</label>
-                    <div class="tab-content">
-                        <div class="width100" name="gconf">
-                            <label>{{.ParamsScanData.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
-                            <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.ParamsScanData.GPageURL}}"/><br><br>
-                            <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
-                            <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.ParamsScanData.AuthClient}}" disabled/><br><br>
-                            <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                            <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                            <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
-                        </div>
-                        {{if not (eq .ParamsScanData.ErrLog nil)}}
-                            <div class="warningslines">
-                                {{range .ParamsScanData.ErrLog}}
-                                <ul>
-                                    <li>{{.}}</li>
-                                </ul>
-                                {{end}}
+                <div id="source_data">
+                    <p><h3> Источник данных:</h3></p>
+                    <div class="chBox">
+                        <input type="checkbox" id="sourceequal" onclick="hideOut(this)" checked="true"/>
+                        <label>Сохранять результат парсинга в исходном документе</label>
+                    </div>
+
+                    <div class="tabs">
+                        <input type="radio" name="tabs" id="tab1" checked="checked">
+                        <label for="tab1">Таблица Google</label>
+                        <div class="tab-content">
+                            <div class="width100" name="gconf">
+                                <label>{{.ParamsScanData.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
+                                <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.ParamsScanData.GPageURL}}"/><br><br>
+                                <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
+                                <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.ParamsScanData.AuthClient}}" disabled/><br><br>
+                                <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
+                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
                             </div>
-                        {{end}}
-                    </div>
-                    
-                    <input type="radio" name="tabs" id="tab2">
-                    <label for="tab2">Файл Excel</label>
-                    <div class="tab-content">
-                        <div class="width100" name="gconf">
-                            <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                            <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                            <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            {{if not (eq .ParamsScanData.ErrLog nil)}}
+                                <div class="warningslines">
+                                    {{range .ParamsScanData.ErrLog}}
+                                    <ul>
+                                        <li>{{.}}</li>
+                                    </ul>
+                                    {{end}}
+                                </div>
+                            {{end}}
                         </div>
-                    </div>
-                    
-                    <input type="radio" name="tabs" id="tab3">
-                    <label for="tab3">Tab 3</label>
-                    <div class="tab-content">
-                        <h2>Запасная</h2>
+                        
+                        <input type="radio" name="tabs" id="tab2">
+                        <label for="tab2">Файл Excel</label>
+                        <div class="tab-content">
+                            <div class="width100" name="gconf">
+                                <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
+                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            </div>
+                        </div>
+                        
+                        <input type="radio" name="tabs" id="tab3">
+                        <label for="tab3">Tab 3</label>
+                        <div class="tab-content">
+                            <h2>Запасная</h2>
+                        </div>
                     </div>
                 </div>
 
-                <input id="sourceequal-flag" type="hidden" checked="true"/>
-            </form>
+                <div id="saving_data">
+                    <hr><br>
+                    <p><h3> Сохранение данных после парсинга:</h3></p>
 
-            <button autofocus type="submit" form="gform_source" value="apply">Отправить</button>
-        </div>
-
-
-
-
-
-        <div id="saving_data" class="backplate">     
-            <p><h3> Сохранение данных после парсинга:</h3></p>       
-            <form id="gform_source" method="POST" action="/task_param_scan" enctype="multipart/form-data">
-
-                <div class="tabs">
-                    <input type="radio" name="tabs" id="tab1" checked="checked">
-                    <label for="tab1">Таблица Google</label>
-                    <div class="tab-content">
-                        <div class="width100" name="gconf">
-                            <label>{{.ParamsScanData.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
-                            <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.ParamsScanData.GPageURL}}"/><br><br>
-                            <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
-                            <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.ParamsScanData.AuthClient}}" disabled/><br><br>
-                            <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                            <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                            <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
-                        </div>
-                        {{if not (eq .ParamsScanData.ErrLog nil)}}
-                            <div class="warningslines">
-                                {{range .ParamsScanData.ErrLog}}
-                                <ul>
-                                    <li>{{.}}</li>
-                                </ul>
-                                {{end}}
+                    <div class="tabs">
+                        <input type="radio" name="stabs" id="stab1" checked="checked">
+                        <label for="stab1">Таблица Google</label>
+                        <div class="tab-content">
+                            <div class="width100" name="gconf">
+                                <label>{{.ParamsScanData.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
+                                <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.ParamsScanData.GPageURL}}"/><br><br>
+                                <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
+                                <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.ParamsScanData.AuthClient}}" disabled/><br><br>
+                                <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
+                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
                             </div>
-                        {{end}}
-                    </div>
-                    
-                    <input type="radio" name="tabs" id="tab2">
-                    <label for="tab2">Файл Excel</label>
-                    <div class="tab-content">
-                        <div class="width100" name="gconf">
-                            <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                            <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                            <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            {{if not (eq .ParamsScanData.ErrLog nil)}}
+                                <div class="warningslines">
+                                    {{range .ParamsScanData.ErrLog}}
+                                    <ul>
+                                        <li>{{.}}</li>
+                                    </ul>
+                                    {{end}}
+                                </div>
+                            {{end}}
                         </div>
-                    </div>
-                    
-                    <input type="radio" name="tabs" id="tab3">
-                    <label for="tab3">Tab 3</label>
-                    <div class="tab-content">
-                        <h2>Запасная</h2>
+                        
+                        <input type="radio" name="stabs" id="stab2">
+                        <label for="stab2">Файл Excel</label>
+                        <div class="tab-content">
+                            <div class="width100" name="gconf">
+                                <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
+                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            </div>
+                        </div>
+                        
+                        <input type="radio" name="stabs" id="stab3">
+                        <label for="stab3">Tab 3</label>
+                        <div class="tab-content">
+                            <h2>Запасная</h2>
+                        </div>
                     </div>
                 </div>
 
             </form>
 
-            <button autofocus type="submit" form="gform_source" value="apply">Отправить</button>
+            <button class="sbmtBtn" type="submit" form="gform_source" value="apply">Отправить</button>
+
 
         </div>
 
