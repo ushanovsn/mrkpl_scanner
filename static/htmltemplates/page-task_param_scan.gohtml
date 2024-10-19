@@ -34,7 +34,7 @@
         }
 
         function hideOut(chBox) {
-            var div = document.getElementById('saving_data');
+            var div = document.getElementById('save_data');
             if (chBox.checked) {
                 div.style.display = 'none';
             } else {
@@ -47,20 +47,20 @@
     
         <div class="backplate">
 
-            <form id="gform_source" method="POST" action="/task_param_scan" enctype="multipart/form-data">
+            <form id="conf_scan_form" method="POST" action="/task_param_scan" enctype="multipart/form-data">
 
                 <div id="source_data">
                     <p><h3> Источник данных:</h3></p>
-                    <div class="chBox">
+                    <div class="chBoxPrior">
                         <input type="checkbox" id="sourceequal" onclick="hideOut(this)" checked="true"/>
                         <label>Сохранять результат парсинга в исходном документе</label>
                     </div>
 
                     <div class="tabs">
-                        <input type="radio" name="tabs" id="tab1" checked="checked">
-                        <label for="tab1">Таблица Google</label>
+                        <input type="radio" name="source_tabs" id="source_tab_google" checked="checked">
+                        <label for="source_tab_google">Таблица Google</label>
                         <div class="tab-content">
-                            <div class="width100" name="gconf">
+                            <div class="conf_list">
                                 <label>{{.ParamsScanData.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
                                 <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.ParamsScanData.GPageURL}}"/><br><br>
                                 <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
@@ -80,33 +80,27 @@
                             {{end}}
                         </div>
                         
-                        <input type="radio" name="tabs" id="tab2">
-                        <label for="tab2">Файл Excel</label>
+                        <input type="radio" name="source_tabs" id="source_tab_xls">
+                        <label for="source_tab_xls">Файл Excel</label>
                         <div class="tab-content">
-                            <div class="width100" name="gconf">
-                                <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
+                            <div class="conf_list">
+                                <label>Файл с исходными данными:</label>
                                 <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
                             </div>
-                        </div>
-                        
-                        <input type="radio" name="tabs" id="tab3">
-                        <label for="tab3">Tab 3</label>
-                        <div class="tab-content">
-                            <h2>Запасная</h2>
                         </div>
                     </div>
                 </div>
 
-                <div id="saving_data">
+                <div id="save_data">
                     <hr><br>
                     <p><h3> Сохранение данных после парсинга:</h3></p>
 
                     <div class="tabs">
-                        <input type="radio" name="stabs" id="stab1" checked="checked">
-                        <label for="stab1">Таблица Google</label>
+                        <input type="radio" name="save_tabs" id="save_tab_google" checked="checked">
+                        <label for="save_tab_google">Таблица Google</label>
                         <div class="tab-content">
-                            <div class="width100" name="gconf">
+                            <div class="conf_list">
                                 <label>{{.ParamsScanData.GPageURLOkPref}} Полный адрес таблицы из адресной строки браузера</label>
                                 <input type="text" placeholder="URL адрес таблицы Google Docs" name="sheeturl" value="{{.ParamsScanData.GPageURL}}"/><br><br>
                                 <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
@@ -126,27 +120,26 @@
                             {{end}}
                         </div>
                         
-                        <input type="radio" name="stabs" id="stab2">
-                        <label for="stab2">Файл Excel</label>
+                        <input type="radio" name="save_tabs" id="save_tab_xls">
+                        <label for="save_tab_xls">Файл Excel</label>
                         <div class="tab-content">
-                            <div class="width100" name="gconf">
-                                <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            <div class="conf_list">
+                                <label>Файл для сохранения данных:</label>
+                                <input type="text" id="filename" placeholder="Файл" name="keyfile" disabled/><br>
+                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                                <div class="chBox">
+                                    <input type="checkbox"/>
+                                    <label>Создать новый файл, если не существует</label>
+                                </div>
                             </div>
                         </div>
-                        
-                        <input type="radio" name="stabs" id="stab3">
-                        <label for="stab3">Tab 3</label>
-                        <div class="tab-content">
-                            <h2>Запасная</h2>
-                        </div>
                     </div>
+
                 </div>
 
             </form>
 
-            <button class="sbmtBtn" type="submit" form="gform_source" value="apply">Отправить</button>
+            <button class="sbmtBtn" type="submit" form="conf_scan_form" value="apply">Отправить</button>
 
 
         </div>

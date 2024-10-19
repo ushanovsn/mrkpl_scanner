@@ -272,6 +272,10 @@ main {
   margin: 10px 50px;
 }
 
+.backplate .conf_list > * {
+  width: 100%;
+}
+
 
 /* labels style */
 .backplate label {
@@ -281,15 +285,15 @@ main {
 
 
 /* Checkbox element style */
-.backplate .chBox {
+.backplate .chBox, .chBoxPrior {
   padding: 5px;
 }
 
-.backplate .chBox label{
+.backplate .chBox, .chBoxPrior label{
   padding-left: 0.2em;
 }
 
-.backplate .chBox input[type="checkbox"]{
+.backplate .chBoxPrior input[type="checkbox"]{
   transform: scale(1.6);
 }
 
@@ -417,56 +421,9 @@ main {
 
 
 
-
-
-#index {
-  justify-content: center;
-  height: 200px;
-}
-
-
-.conf_list {
-  margin: 10px;
-}
-
-.conf_list * {
-  width: 150px;
-  text-align: center;
-}
-
-.conf_list a:visited, .conf_list a:link, .conf_list a {
-  color: var(--links)
-}
-
-.conf_list a:hover {
-	text-decoration: none;
-}
-
-
-
-.gconf_list {
-  margin: 5%;
-  width: 100%;
-  /*border: 1px solid red;*/
-
-  display: flex;
-  place-items: center;
-}
-
-
-.gconf_list form {
-  width: 100%;
-}
-
-
-.width100 * {
-  width: 100%;
-}
-
-.width100 input[type=file] {
-  width: 130px;
-}
-
+/******************************************************************************************************************************/
+/*                                               Warnings                                                                     */
+/******************************************************************************************************************************/
 
 
 .warningslines {
@@ -483,7 +440,7 @@ main {
   background-color: var(--warning-hovered);
 }
 
-
+/*****************************************************/
 
 
 
