@@ -35,11 +35,21 @@
 
         function hideOut(chBox) {
             var div = document.getElementById('save_data');
+            var commondiv = document.getElementsByClassName('common_param');
             if (chBox.checked) {
                 div.style.display = 'none';
+                for (let i = 0; i < commondiv.length; i++) {
+                    commondiv[i].style.display = 'block';
+                }
+
             } else {
-                 div.style.display = 'block'
+                div.style.display = 'block'
+                for (let i = 0; i < commondiv.length; i++) {
+                    commondiv[i].style.display = 'none';
+                }
             }
+
+
         }
     </script>
 
@@ -68,7 +78,71 @@
                                 <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
                                 <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
                                 <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+
+                                <div>
+                                    <p><b><label>Параметры таблицы:</label></b></p>
+
+                                    <label>Номер строки начала данных</label>
+                                    <input type="number" placeholder="1" name="sheeturl1" value=""/>
+                                    <br>
+                                    <label>Столбец с данными (url)</label>
+                                    <input type="number" placeholder="B" name="sheeturl2" value="" />
+                                    <br>
+                                    <div class="common_param">
+                                        <label>Столбец для записи цены</label>
+                                        <input type="text" pattern="[A-Z]" placeholder="C" name="sheeturl3" value=""/>
+                                        <select name="prices">
+                                            <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                            <option value="price">Обычная цена (со скидкой)</option>
+                                            <option value="no_discount">Полная цена (без скидки)</option>
+                                            <option value="individual_discount">Специальная цена (по карте)</option>
+                                        </select>
+                                        <br>
+                                        <label>Столбец для параметра #1</label>
+                                        <input type="text" pattern="[A-Z]{1,2}" placeholder="C" name="sheeturl3" value=""/>
+                                        <select name="prices">
+                                            <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                            <option value="price">Обычная цена (со скидкой)</option>
+                                            <option value="no_discount">Полная цена (без скидки)</option>
+                                            <option value="individual_discount">Специальная цена (по карте)</option>
+                                            <option value="data_time">Дата-время</option>
+                                            <option value="name">Название</option>
+                                            <option value="brand">Бренд</option>
+                                            <option value="supplier">Продавец</option>
+                                        </select>
+                                        <br>
+                                        <br>
+                                        <label>Столбец для параметра #2</label>
+                                        <input type="text" pattern="[A-Z]{1,2}" placeholder="C" name="sheeturl3" value=""/>
+                                        <select name="prices">
+                                            <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                            <option value="price">Обычная цена (со скидкой)</option>
+                                            <option value="no_discount">Полная цена (без скидки)</option>
+                                            <option value="individual_discount">Специальная цена (по карте)</option>
+                                            <option value="data_time">Дата-время</option>
+                                            <option value="name">Название</option>
+                                            <option value="brand">Бренд</option>
+                                            <option value="supplier">Продавец</option>
+                                        </select>
+                                        <br>
+                                        <br>
+                                        <label>Столбец для параметра #3</label>
+                                        <input type="text" pattern="[A-Z]{1,2}" placeholder="C" name="sheeturl3" value=""/>
+                                        <select name="prices">
+                                            <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                            <option value="price">Обычная цена (со скидкой)</option>
+                                            <option value="no_discount">Полная цена (без скидки)</option>
+                                            <option value="individual_discount">Специальная цена (по карте)</option>
+                                            <option value="data_time">Дата-время</option>
+                                            <option value="name">Название</option>
+                                            <option value="brand">Бренд</option>
+                                            <option value="supplier">Продавец</option>
+                                        </select>
+                                        <br>
+                                    </div>
+                                </div>
                             </div>
+
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
                                 <div class="warningslines">
                                     {{range .ParamsScanData.ErrLog}}
@@ -88,6 +162,36 @@
                                 <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
                                 <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
                             </div>
+
+                            {{if not (eq .ParamsScanData.ErrLog nil)}}
+                                <div class="warningslines">
+                                    {{range .ParamsScanData.ErrLog}}
+                                    <ul>
+                                        <li>{{.}}</li>
+                                    </ul>
+                                    {{end}}
+                                </div>
+                            {{end}}
+                        </div>
+                        
+                        <input type="radio" name="source_tabs" id="source_tab_db">
+                        <label for="source_tab_db">База данных</label>
+                        <div class="tab-content">
+                            <div class="conf_list">
+                                <label>Подключение к БД:</label>
+                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            </div>
+
+                            {{if not (eq .ParamsScanData.ErrLog nil)}}
+                                <div class="warningslines">
+                                    {{range .ParamsScanData.ErrLog}}
+                                    <ul>
+                                        <li>{{.}}</li>
+                                    </ul>
+                                    {{end}}
+                                </div>
+                            {{end}}
                         </div>
                     </div>
                 </div>
@@ -109,6 +213,7 @@
                                 <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
                                 <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
                             </div>
+
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
                                 <div class="warningslines">
                                     {{range .ParamsScanData.ErrLog}}
@@ -120,6 +225,12 @@
                             {{end}}
                         </div>
                         
+
+
+
+
+                        <!--     БЛОК СОХРАНЕНИЯ ДАННЫХ       -->
+
                         <input type="radio" name="save_tabs" id="save_tab_xls">
                         <label for="save_tab_xls">Файл Excel</label>
                         <div class="tab-content">
@@ -132,6 +243,36 @@
                                     <label>Создать новый файл, если не существует</label>
                                 </div>
                             </div>
+
+                            {{if not (eq .ParamsScanData.ErrLog nil)}}
+                                <div class="warningslines">
+                                    {{range .ParamsScanData.ErrLog}}
+                                    <ul>
+                                        <li>{{.}}</li>
+                                    </ul>
+                                    {{end}}
+                                </div>
+                            {{end}}
+                        </div>
+                        
+                        <input type="radio" name="save_tabs" id="save_tab_db">
+                        <label for="save_tab_db">База данных</label>
+                        <div class="tab-content">
+                            <div class="conf_list">
+                                <label>Подключение к БД:</label>
+                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            </div>
+
+                            {{if not (eq .ParamsScanData.ErrLog nil)}}
+                                <div class="warningslines">
+                                    {{range .ParamsScanData.ErrLog}}
+                                    <ul>
+                                        <li>{{.}}</li>
+                                    </ul>
+                                    {{end}}
+                                </div>
+                            {{end}}
                         </div>
                     </div>
 

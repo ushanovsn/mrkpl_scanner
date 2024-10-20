@@ -427,7 +427,6 @@ main {
 
 
 .warningslines {
-  width: 80%;
   margin: 20px auto;
   border: 1px solid var(--warning-border);
   border-radius: 10px;
