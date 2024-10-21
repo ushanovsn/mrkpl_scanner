@@ -2,15 +2,15 @@ package options
 
 import (
 	"github.com/go-chi/chi/v5"
-	"net/http"
 	"html/template"
+	"net/http"
 )
 
 type UIObj struct {
-	server *http.Server
-	router chi.Router
+	server   *http.Server
+	router   chi.Router
 	htmlNavi []NaviMenu
-	tmpl *template.Template
+	tmpl     *template.Template
 }
 
 // Get UI http server

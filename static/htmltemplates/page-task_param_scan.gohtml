@@ -17,41 +17,32 @@
             return path; // just the filename
             }
 
-        function updateFilename(path) {
+        function updateFilename(path, input_id) {
             var name = extractFilename(path);
-            document.getElementById('filename').value = name;
-        }
-
-        function disablingElem(chBox) {
-            if (chBox.checked) {
-                document.getElementById('fconf').disabled = true
-                document.getElementById('gconf').disabled = false
-            } else {
-                document.getElementById('fconf').disabled = false
-                document.getElementById('gconf').disabled = true
-            }
-            document.getElementById('filepath').value = chBox.checked
+            document.getElementById(input_id).value = name;
         }
 
         function hideOut(chBox) {
             var div = document.getElementById('save_data');
-            var commondiv = document.getElementsByClassName('common_param');
+            var commondiv = document.getElementsByClassName('common_param_row');
+
             if (chBox.checked) {
                 div.style.display = 'none';
                 for (let i = 0; i < commondiv.length; i++) {
-                    commondiv[i].style.display = 'block';
+                    commondiv[i].style.visibility = 'visible';
                 }
-
             } else {
                 div.style.display = 'block'
                 for (let i = 0; i < commondiv.length; i++) {
-                    commondiv[i].style.display = 'none';
+                    commondiv[i].style.visibility = 'collapse';
                 }
             }
-
-
         }
+
     </script>
+
+
+
 
     <main>
     
@@ -76,70 +67,92 @@
                                 <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
                                 <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.ParamsScanData.AuthClient}}" disabled/><br><br>
                                 <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                                <input type="text" id="filename_google_source" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value, 'filename_google_source')" style="color: transparent; max-width: 150px;"><br><br>
 
                                 <div>
                                     <p><b><label>Параметры таблицы:</label></b></p>
 
-                                    <label>Номер строки начала данных</label>
-                                    <input type="number" placeholder="1" name="sheeturl1" value=""/>
-                                    <br>
-                                    <label>Столбец с данными (url)</label>
-                                    <input type="number" placeholder="B" name="sheeturl2" value="" />
-                                    <br>
-                                    <div class="common_param">
-                                        <label>Столбец для записи цены</label>
-                                        <input type="text" pattern="[A-Z]" placeholder="C" name="sheeturl3" value=""/>
-                                        <select name="prices">
-                                            <option value="" selected disabled hidden>--Выберите тип цены--</option>
-                                            <option value="price">Обычная цена (со скидкой)</option>
-                                            <option value="no_discount">Полная цена (без скидки)</option>
-                                            <option value="individual_discount">Специальная цена (по карте)</option>
-                                        </select>
-                                        <br>
-                                        <label>Столбец для параметра #1</label>
-                                        <input type="text" pattern="[A-Z]{1,2}" placeholder="C" name="sheeturl3" value=""/>
-                                        <select name="prices">
-                                            <option value="" selected disabled hidden>--Выберите параметр--</option>
-                                            <option value="price">Обычная цена (со скидкой)</option>
-                                            <option value="no_discount">Полная цена (без скидки)</option>
-                                            <option value="individual_discount">Специальная цена (по карте)</option>
-                                            <option value="data_time">Дата-время</option>
-                                            <option value="name">Название</option>
-                                            <option value="brand">Бренд</option>
-                                            <option value="supplier">Продавец</option>
-                                        </select>
-                                        <br>
-                                        <br>
-                                        <label>Столбец для параметра #2</label>
-                                        <input type="text" pattern="[A-Z]{1,2}" placeholder="C" name="sheeturl3" value=""/>
-                                        <select name="prices">
-                                            <option value="" selected disabled hidden>--Выберите параметр--</option>
-                                            <option value="price">Обычная цена (со скидкой)</option>
-                                            <option value="no_discount">Полная цена (без скидки)</option>
-                                            <option value="individual_discount">Специальная цена (по карте)</option>
-                                            <option value="data_time">Дата-время</option>
-                                            <option value="name">Название</option>
-                                            <option value="brand">Бренд</option>
-                                            <option value="supplier">Продавец</option>
-                                        </select>
-                                        <br>
-                                        <br>
-                                        <label>Столбец для параметра #3</label>
-                                        <input type="text" pattern="[A-Z]{1,2}" placeholder="C" name="sheeturl3" value=""/>
-                                        <select name="prices">
-                                            <option value="" selected disabled hidden>--Выберите параметр--</option>
-                                            <option value="price">Обычная цена (со скидкой)</option>
-                                            <option value="no_discount">Полная цена (без скидки)</option>
-                                            <option value="individual_discount">Специальная цена (по карте)</option>
-                                            <option value="data_time">Дата-время</option>
-                                            <option value="name">Название</option>
-                                            <option value="brand">Бренд</option>
-                                            <option value="supplier">Продавец</option>
-                                        </select>
-                                        <br>
-                                    </div>
+                                    <table>
+                                        <tr>
+                                            <td><label>Номер строки начала данных</label></td>
+                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="sheeturl1" value="" size="5"/></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Столбец с данными (url)</label></td>
+                                            <td><input type="text" placeholder="A" name="sheeturl2" value="" size="5"/></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="common_param_row">
+                                            <td><label>Столбец для записи цены</label></td>
+                                            <td><input type="text" pattern="[A-Z]" placeholder="B" name="sheeturl3" value="" size="5"/></td>
+                                            <td>
+                                                <select name="prices">
+                                                    <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                                    <option value="price">Обычная цена (со скидкой)</option>
+                                                    <option value="no_discount">Полная цена (без скидки)</option>
+                                                    <option value="individual_discount">Специальная цена (по карте)</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr class="common_param_row">
+                                            <td><label>Столбец для параметра #1</label></td>
+                                            <td><input type="text" pattern="[A-Z]" placeholder="C" name="sheeturl3" value="" size="5"/></td>
+                                            <td>
+                                                <select name="prices">
+                                                    <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                    <option value="price">Обычная цена (со скидкой)</option>
+                                                    <option value="no_discount">Полная цена (без скидки)</option>
+                                                    <option value="individual_discount">Специальная цена (по карте)</option>
+                                                    <option value="data_time">Дата-время</option>
+                                                    <option value="name">Название</option>
+                                                    <option value="brand">Бренд</option>
+                                                    <option value="supplier">Продавец</option>
+                                                    <option value="err">Сообщение об ошибке</option>
+                                                    <option value="scu">SKU ID</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr class="common_param_row">
+                                            <td><label>Столбец для параметра #2</label></td>
+                                            <td><input type="text" pattern="[A-Z]" placeholder="D" name="sheeturl3" value="" size="5"/></td>
+                                            <td>
+                                                <select name="prices">
+                                                    <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                    <option value="price">Обычная цена (со скидкой)</option>
+                                                    <option value="no_discount">Полная цена (без скидки)</option>
+                                                    <option value="individual_discount">Специальная цена (по карте)</option>
+                                                    <option value="data_time">Дата-время</option>
+                                                    <option value="name">Название</option>
+                                                    <option value="brand">Бренд</option>
+                                                    <option value="supplier">Продавец</option>
+                                                    <option value="err">Сообщение об ошибке</option>
+                                                    <option value="scu">SKU ID</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        </tr>
+                                        <tr class="common_param_row">
+                                            <td><label>Столбец для параметра #3</label></td>
+                                            <td><input type="text" pattern="[A-Z]" placeholder="E" name="sheeturl3" value="" size="5"/></td>
+                                            <td>
+                                                <select name="prices">
+                                                    <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                    <option value="price">Обычная цена (со скидкой)</option>
+                                                    <option value="no_discount">Полная цена (без скидки)</option>
+                                                    <option value="individual_discount">Специальная цена (по карте)</option>
+                                                    <option value="data_time">Дата-время</option>
+                                                    <option value="name">Название</option>
+                                                    <option value="brand">Бренд</option>
+                                                    <option value="supplier">Продавец</option>
+                                                    <option value="err">Сообщение об ошибке</option>
+                                                    <option value="scu">SKU ID</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+
                                 </div>
                             </div>
 
@@ -159,8 +172,93 @@
                         <div class="tab-content">
                             <div class="conf_list">
                                 <label>Файл с исходными данными:</label>
-                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                                <input type="text" id="filename_xl_source" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value, 'filename_xl_source')" style="color: transparent; max-width: 150px;"><br><br>
+                            </div>
+
+                            <div>
+                                <p><b><label>Параметры таблицы:</label></b></p>
+
+                                <table>
+                                    <tr>
+                                        <td><label>Номер строки начала данных</label></td>
+                                        <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="sheeturl1" value="" size="5"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец с данными (url)</label></td>
+                                        <td><input type="text" placeholder="A" name="sheeturl2" value="" size="5"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для записи цены</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="B" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для параметра #1</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="C" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для параметра #2</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="D" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для параметра #3</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="E" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+
                             </div>
 
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
@@ -177,10 +275,117 @@
                         <input type="radio" name="source_tabs" id="source_tab_db">
                         <label for="source_tab_db">База данных</label>
                         <div class="tab-content">
-                            <div class="conf_list">
-                                <label>Подключение к БД:</label>
-                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            <div >
+                                <label>Подключение к БД: </label>
+                                <select name="databases">
+                                    <option value="" selected disabled hidden>--Выберите тип БД--</option>
+                                    <option value="pg">Postgres</option>
+                                    <option value="msql">MySql</option>
+                                    <option value="mssql">MS SQL Server</option>
+                                    <option value="sqlite">SQLite</option>
+                                </select>
+
+                                <table style="border-spacing: 5px 0;">
+                                    <tr>
+                                        <td width="min-content"><label>Адрес: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="localhost" name="sheeturl3" value=""/></td>
+                                        <td width="min-content"><label>Порт: </label></td>
+                                        <td width="min-content"><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="sheeturl1" value="" size="6"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="min-content"><label>Пользователь: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="username" name="sheeturl3" value=""/></td>
+                                        <td width="min-content"><label>Пароль: </label></td>
+                                        <td width="min-content"><input type="password" placeholder="******" name="sheeturl1" value=""/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="min-content"><label>База данных: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="database" name="sheeturl3" value=""/></td>
+                                        <td width="min-content"><label>Таблица: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="parse_table" name="sheeturl1" value=""/></td>
+                                    </tr>
+                                </table>
+                                <br>
+                            </div>
+
+                            <div>
+                                <p><b><label>Параметры таблицы:</label></b></p>
+
+                                <table>
+                                    <tr>
+                                        <td><label>Столбец с данными (url)</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для записи цены</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для параметра #1</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для параметра #2</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <tr class="common_param_row">
+                                        <td><label>Столбец для параметра #3</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+
                             </div>
 
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
@@ -196,6 +401,12 @@
                     </div>
                 </div>
 
+
+<!--     БЛОК СОХРАНЕНИЯ ДАННЫХ       -->
+<!--     БЛОК СОХРАНЕНИЯ ДАННЫХ       -->
+<!--     БЛОК СОХРАНЕНИЯ ДАННЫХ       -->
+
+
                 <div id="save_data">
                     <hr><br>
                     <p><h3> Сохранение данных после парсинга:</h3></p>
@@ -210,10 +421,89 @@
                                 <label>{{.ParamsScanData.AuthClientOkPref}} email клиента (из текущего файла аутентификации)</label>
                                 <input type="text" placeholder="email текущего клиента" name="curclient" value="{{.ParamsScanData.AuthClient}}" disabled/><br><br>
                                 <label>Выбранный файл с аутентификационными данными сервисного аккаунта Google</label>
-                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                                <input type="text" id="filename_google_save" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".json" name="file" onchange="updateFilename(this.value, 'filename_google_save')" style="color: transparent; max-width: 150px;"><br><br>
                             </div>
+                            
+                            <div>
+                                <p><b><label>Параметры таблицы:</label></b></p>
 
+                                <table>
+                                    <tr>
+                                        <td><label>Номер строки начала данных</label></td>
+                                        <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="sheeturl1" value="" size="5"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для записи цены</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="B" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #1</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="C" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #2</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="D" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #3</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="E" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
                                 <div class="warningslines">
                                     {{range .ParamsScanData.ErrLog}}
@@ -227,21 +517,101 @@
                         
 
 
-
-
-                        <!--     БЛОК СОХРАНЕНИЯ ДАННЫХ       -->
-
                         <input type="radio" name="save_tabs" id="save_tab_xls">
                         <label for="save_tab_xls">Файл Excel</label>
                         <div class="tab-content">
                             <div class="conf_list">
                                 <label>Файл для сохранения данных:</label>
-                                <input type="text" id="filename" placeholder="Файл" name="keyfile" disabled/><br>
-                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                                <input type="text" id="filename_xl_save" placeholder="Файл" name="keyfile" disabled/><br><br>
+                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value, 'filename_xl_save')" style="color: transparent; max-width: 150px;"><br><br>
                                 <div class="chBox">
                                     <input type="checkbox"/>
                                     <label>Создать новый файл, если не существует</label>
                                 </div>
+                                <div class="chBox">
+                                    <input type="checkbox"/>
+                                    <label>Новый файл "filename_YYYY-MM-DD_HH-MM-SS" при каждом сканировании</label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p><b><label>Параметры таблицы:</label></b></p>
+
+                                <table>
+                                    <tr>
+                                        <td><label>Номер строки начала данных</label></td>
+                                        <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="sheeturl1" value="" size="5"/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для записи цены</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="B" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #1</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="C" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #2</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="D" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #3</label></td>
+                                        <td><input type="text" pattern="[A-Z]" placeholder="E" name="sheeturl3" value="" size="5"/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+
                             </div>
 
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
@@ -258,10 +628,121 @@
                         <input type="radio" name="save_tabs" id="save_tab_db">
                         <label for="save_tab_db">База данных</label>
                         <div class="tab-content">
-                            <div class="conf_list">
-                                <label>Подключение к БД:</label>
-                                <input type="text" id="filename" placeholder="Выбранный файл" name="keyfile" disabled/><br><br>
-                                <input type="file" accept=".xlsx, .xlsm" name="file" onchange="updateFilename(this.value)" style="color: transparent;"><br><br>
+                            <div >
+                                <label>Подключение к БД: </label>
+                                <select name="databases">
+                                    <option value="" selected disabled hidden>--Выберите тип БД--</option>
+                                    <option value="pg">Postgres</option>
+                                    <option value="msql">MySql</option>
+                                    <option value="mssql">MS SQL Server</option>
+                                    <option value="sqlite">SQLite</option>
+                                </select>
+
+                                <table style="border-spacing: 5px 0;">
+                                    <tr>
+                                        <td width="min-content"><label>Адрес: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="localhost" name="sheeturl3" value=""/></td>
+                                        <td width="min-content"><label>Порт: </label></td>
+                                        <td width="min-content"><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="sheeturl1" value="" size="6"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="min-content"><label>Пользователь: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="username" name="sheeturl3" value=""/></td>
+                                        <td width="min-content"><label>Пароль: </label></td>
+                                        <td width="min-content"><input type="password" placeholder="******" name="sheeturl1" value=""/></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="min-content"><label>База данных: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="database" name="sheeturl3" value=""/></td>
+                                        <td width="min-content"><label>Таблица: </label></td>
+                                        <td width="min-content"><input type="text" placeholder="parse_table" name="sheeturl1" value=""/></td>
+                                    </tr>
+                                </table>
+                                <div class="chBox">
+                                    <input type="checkbox" title="Обновление существующих в БД строк или вставка новых строк при каждой итерации парсинга"/>
+                                    <label>Обновлять существующие записи (определение по SKU ID)</label>
+                                </div>
+                                <br>
+                            </div>
+
+                            <div>
+                                <p><b><label>Параметры таблицы:</label></b></p>
+
+                                <table>
+                                    <tr>
+                                        <td><label>Столбец SKU ID</label></td>
+                                        <td><input type="text" placeholder="sku_name_column" name="sheeturl2" value=""/></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для записи цены</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите тип цены--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #1</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #2</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Столбец для параметра #3</label></td>
+                                        <td><input type="text" placeholder="name_column" name="sheeturl2" value=""/></td>
+                                        <td>
+                                            <select name="prices">
+                                                <option value="" selected disabled hidden>--Выберите параметр--</option>
+                                                <option value="price">Обычная цена (со скидкой)</option>
+                                                <option value="no_discount">Полная цена (без скидки)</option>
+                                                <option value="individual_discount">Специальная цена (по карте)</option>
+                                                <option value="data_time">Дата-время</option>
+                                                <option value="name">Название</option>
+                                                <option value="brand">Бренд</option>
+                                                <option value="supplier">Продавец</option>
+                                                <option value="err">Сообщение об ошибке</option>
+                                                <option value="scu">SKU ID</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+
                             </div>
 
                             {{if not (eq .ParamsScanData.ErrLog nil)}}
@@ -282,13 +763,7 @@
 
             <button class="sbmtBtn" type="submit" form="conf_scan_form" value="apply">Отправить</button>
 
-
         </div>
-
-
-
-
-
 
 
 

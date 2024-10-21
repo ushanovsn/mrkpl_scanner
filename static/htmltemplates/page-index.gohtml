@@ -2,152 +2,31 @@
 {{template "header" .}}
 {{template "navigation" .}}
 
+
+    <script>
+        
+        function disablingElem(chBox) {
+            if (chBox.checked) {
+                document.getElementById('fconf').disabled = true
+                document.getElementById('gconf').disabled = false
+            } else {
+                document.getElementById('fconf').disabled = false
+                document.getElementById('gconf').disabled = true
+            }
+            document.getElementById('filepath').value = chBox.checked
+        }
+
+    </script>
+
     <main>
-    <p>
-        <div id="index" class="base">
-            <div class="conf_list">
-                <a href="gparams">
-                    <div>
-                        <img src="/assets/pic/gparams.png">
-                    </div>
-                    <div>
-                        Конфигурация Google/XLS/...
-                    </div>
-                </a>
-            </div>
-            <div class="conf_list">
-                <a href="pparams">
-                    <div>
-                        <img src="/assets/pic/pparams.png">
-                    </div>
-                    <div>
-                        Конфигурация парсеров
-                    </div>
-                </a>
-            </div>
-            <div class="conf_list">
-                <a href="status">
-                    <div>
-                        <img src="/assets/pic/status.png">
-                    </div>
-                    <div>
-                        Статистика и управление
-                    </div>
-                </a>
-            </div>
-        </div>
-    </p>
-
-
-
-
-
-
-
-
+        <h1>Состояние и управление парсингом</h1>
+        <br>
+        <h2>В разработке....</h2>
 
         <details>
-            <summary>Тест прокрутки стриницы</summary>
+            <summary>Доп параметры</summary>
 
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <p><i>Hover over the "Dropdown" link to see the dropdown menu.</i></p>
-            <h3><i>Dropdown Menu inside a Navigation Bar</i></h3>
-            <p><b>Hover over the "Dropdown" link to see the dropdown menu.</b></p>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-
-            <p>Hover over the "Dropdown" link to see the dropdown menu.</p>
-            <h3>Dropdown Menu inside a Navigation Bar</h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
-            <h3><b>Dropdown Menu inside a Navigation Bar</b></h3>
+            <h3>Параметры отсутствуют</h3>
         </details>
 
     </main>

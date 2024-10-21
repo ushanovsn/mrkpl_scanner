@@ -20,8 +20,8 @@ type Parser struct {
 	reId        regexp.Regexp
 	reSize      regexp.Regexp
 	itemId      string
-	location	int
-	discount	float64
+	location    int
+	discount    float64
 	rawData     []byte
 }
 
@@ -38,7 +38,7 @@ func New() *Parser {
 // Get new initialized parser
 func (p *Parser) SetLocation() error {
 	// url for request data
-	url := fmt.Sprintf("https://user-geo-data.wildberries.ru/get-geo-info?currency=RUB")
+	url := "https://user-geo-data.wildberries.ru/get-geo-info?currency=RUB"
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -49,12 +49,10 @@ func (p *Parser) SetLocation() error {
 	}
 	defer res.Body.Close()
 
-
 	// check data type
 	if c := res.Header.Get("Content-Type"); !strings.Contains(c, "application/json") {
 		return fmt.Errorf("Received wrong content type: %v", c)
 	}
-
 
 	// read json body
 	rawData, err := io.ReadAll(res.Body)
@@ -63,11 +61,11 @@ func (p *Parser) SetLocation() error {
 	}
 
 	var jData struct {
-		Address string `json:"address"`
-		Ip string `json:"ip"`
-		Currency string `json:"currency"`
-		Locale string `json:"locale"`
-		Destinations []int `json:"destinations"`
+		Address      string `json:"address"`
+		Ip           string `json:"ip"`
+		Currency     string `json:"currency"`
+		Locale       string `json:"locale"`
+		Destinations []int  `json:"destinations"`
 	}
 
 	err = json.Unmarshal(rawData, &jData)
@@ -93,12 +91,10 @@ func (p *Parser) SetCurDiscount() error {
 	}
 	defer res.Body.Close()
 
-
 	// check data type
 	if c := res.Header.Get("Content-Type"); !strings.Contains(c, "application/json") {
 		return fmt.Errorf("Received wrong content type: %v", c)
 	}
-
 
 	// read json body
 	rawData, err := io.ReadAll(res.Body)
@@ -107,9 +103,9 @@ func (p *Parser) SetCurDiscount() error {
 	}
 
 	var jData struct {
-		Data  []struct {
-				Discount float64 `json:"discount_value"`
-			} `json:"data"`
+		Data []struct {
+			Discount float64 `json:"discount_value"`
+		} `json:"data"`
 	}
 
 	err = json.Unmarshal(rawData, &jData)
@@ -216,7 +212,7 @@ func (p *Parser) UnmarshalJSON(data []byte) error {
 	p.result.Supplier = j.Data.Products[pId].Supplier
 	p.result.RegularPrice = float64(j.Data.Products[pId].Sizes[sId].Price.Basic) / 100
 	p.result.DiscountPrice = float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0
-	p.result.IndividualPrice = (float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0) * (100 - (p.discount/100))
+	p.result.IndividualPrice = (float64(j.Data.Products[pId].Sizes[sId].Price.Product) / 100.0) * (100 - (p.discount / 100))
 
 	p.pStatus = true
 

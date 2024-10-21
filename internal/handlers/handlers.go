@@ -15,15 +15,15 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 
 		// struct for index page
 		data := struct {
-			Title                   string
-			NaviMenu				[]opt.NaviMenu
-			ActiveMenu				opt.NaviActiveMenu
+			Title      string
+			NaviMenu   []opt.NaviMenu
+			ActiveMenu opt.NaviActiveMenu
 		}{
-			Title:                   opt.DefUIPageTitle,
+			Title:    opt.DefUIPageTitle,
 			NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
 			ActiveMenu: opt.NaviActiveMenu{
-				ActiveTabVal: "/",
-				ActiveDMenuVal: "",
+				ActiveTabVal:    "/",
+				ActiveDMenuVal:  "",
 				PageDescription: "Главная",
 			},
 		}
@@ -32,10 +32,9 @@ func IndexPage(scnr *opt.ScannerObj) http.HandlerFunc {
 		header := http.StatusOK
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 
-
 		// OK. Processing template - replace\substitute values in template and send to front
 		w.WriteHeader(header)
-		
+
 		if err := tmpl.ExecuteTemplate(w, "index", data); err != nil {
 			log.Error(fmt.Sprintf("Error executing template: %v\n", err.Error()))
 		}
@@ -166,16 +165,16 @@ func writeParamsScan(w http.ResponseWriter, scnr *opt.ScannerObj, errList []stri
 
 	// struct for Scanner Parameters page
 	data := struct {
-		Title                   string
-		NaviMenu				[]opt.NaviMenu
-		ActiveMenu				opt.NaviActiveMenu
-		ParamsScanData			opt.ParamsScanPageData
+		Title          string
+		NaviMenu       []opt.NaviMenu
+		ActiveMenu     opt.NaviActiveMenu
+		ParamsScanData opt.ParamsScanPageData
 	}{
-		Title:                   opt.DefUIPageTitle,
+		Title:    opt.DefUIPageTitle,
 		NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
 		ActiveMenu: opt.NaviActiveMenu{
-			ActiveTabVal: "/task_param",
-			ActiveDMenuVal: "/task_param_scan",
+			ActiveTabVal:    "/task_param",
+			ActiveDMenuVal:  "/task_param_scan",
 			PageDescription: "Параметры задачи \"Сканирование\"",
 		},
 		ParamsScanData: opt.ParamsScanPageData{
@@ -183,7 +182,6 @@ func writeParamsScan(w http.ResponseWriter, scnr *opt.ScannerObj, errList []stri
 			AuthClient: scnr.GetGDocSvc().GetCurClien(),
 		},
 	}
-
 
 	// check current values and set indicators
 	if data.ParamsScanData.GPageURL != "" {
@@ -247,15 +245,15 @@ func StatusPage(scnr *opt.ScannerObj) http.HandlerFunc {
 
 		// struct for current page
 		data := struct {
-			Title                   string
-			NaviMenu				[]opt.NaviMenu
-			ActiveMenu				opt.NaviActiveMenu
+			Title      string
+			NaviMenu   []opt.NaviMenu
+			ActiveMenu opt.NaviActiveMenu
 		}{
-			Title:                   opt.DefUIPageTitle,
+			Title:    opt.DefUIPageTitle,
 			NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
 			ActiveMenu: opt.NaviActiveMenu{
-				ActiveTabVal: "/status",
-				ActiveDMenuVal: "",
+				ActiveTabVal:    "/status",
+				ActiveDMenuVal:  "",
 				PageDescription: "Статус процессов сервера",
 			},
 		}
@@ -264,10 +262,10 @@ func StatusPage(scnr *opt.ScannerObj) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 
 		err := tmpl.ExecuteTemplate(w, "status", data)
-	
+
 		if err != nil {
 			log.Error("Error executing status template: " + err.Error())
 		}
-	
+
 	})
 }

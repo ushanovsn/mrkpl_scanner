@@ -3,10 +3,10 @@ package ui
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"mrkpl_scanner/internal/handlers"
 	opt "mrkpl_scanner/internal/options"
 	"net/http"
-	"html/template"
 
 	"github.com/go-chi/chi/v5"
 )

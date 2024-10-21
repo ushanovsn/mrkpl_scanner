@@ -12,4 +12,3 @@ type ParamsScanPageData struct {
 type PParamsPageData struct {
 	Title string
 }
-

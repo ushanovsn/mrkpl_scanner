@@ -4,20 +4,20 @@ package options
 func GetNavigationMenu() []NaviMenu {
 	return []NaviMenu{
 		{
-			ItmName: "Главная",
-			ItmLink: "/",
+			ItmName:   "Главная",
+			ItmLink:   "/",
 			ItmIsMenu: false,
-			ItmMenu: nil,
+			ItmMenu:   nil,
 		},
 		{
-			ItmName: "Статус",
-			ItmLink: "/status",
+			ItmName:   "Статус",
+			ItmLink:   "/status",
 			ItmIsMenu: false,
-			ItmMenu: nil,
+			ItmMenu:   nil,
 		},
 		{
-			ItmName: "Конфигурация",
-			ItmLink: "/config",
+			ItmName:   "Конфигурация",
+			ItmLink:   "/config",
 			ItmIsMenu: true,
 			ItmMenu: []NaviDropMenu{
 				{
@@ -47,8 +47,8 @@ func GetNavigationMenu() []NaviMenu {
 			},
 		},
 		{
-			ItmName: "Параметры задач",
-			ItmLink: "/task_param",
+			ItmName:   "Параметры задач",
+			ItmLink:   "/task_param",
 			ItmIsMenu: true,
 			ItmMenu: []NaviDropMenu{
 				{
@@ -66,10 +66,10 @@ func GetNavigationMenu() []NaviMenu {
 			},
 		},
 		{
-			ItmName: "Лог",
-			ItmLink: "/log",
+			ItmName:   "Лог",
+			ItmLink:   "/log",
 			ItmIsMenu: false,
-			ItmMenu: nil,
+			ItmMenu:   nil,
 		},
 	}
 }
