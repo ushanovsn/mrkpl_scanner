@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"html/template"
 	opt "mrkpl_scanner/internal/options"
 	"net/http"
 )
@@ -47,16 +46,54 @@ func ParamsScanPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log := scnr.GetLogger()
 
-		// execute template and apply data
-		if err := writeParamsScan(w, scnr, nil); err != nil {
-			log.Error(err.Error())
+		if r.Method != "POST" && r.Method != "GET" {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			log.Warn(fmt.Sprintf("Wrong %s method for page \"task_param_scan\"", r.Method ))
+			return
 		}
+
+		tmpl := scnr.GetUIObj().GetUIHTMLTemplates()
+
+		// struct for Scanner Parameters page
+		data := struct {
+			Title          string
+			NaviMenu       []opt.NaviMenu
+			ActiveMenu     opt.NaviActiveMenu
+			ParamsScanData opt.ParamsScanPageData
+		}{
+			Title:    opt.DefUIPageTitle,
+			NaviMenu: scnr.GetUIObj().GetUINaviMenu(),
+			ActiveMenu: opt.NaviActiveMenu{
+				ActiveTabVal:    "/task_param",
+				ActiveDMenuVal:  "/task_param_scan",
+				PageDescription: "Параметры задачи \"Сканирование\"",
+			},
+			ParamsScanData: *scnr.GetUIObj().GetPageTaskScanData(scnr),
+		}
+
+		// process form from page
+		if r.Method == "POST" {
+			if err := procTaskParamScan(&data.ParamsScanData, r, scnr); err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				log.Error(fmt.Sprintf("Error processing uploaded data from page \"task_param_scan\", error: %s", err.Error()))
+				return
+			}
+		}
+
+		w.Header().Add("Content-Type", "text/html; charset=utf-8")
+	
+		// execute template and apply data
+		if err := tmpl.ExecuteTemplate(w, "task_param_scan", data); err != nil {
+			err = fmt.Errorf("Error executing template: %v\n", err.Error())
+		}
+	
 	})
 }
 
 // Processor for update Scan parameters
 func ParamsScanPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		/*
 		log := scnr.GetLogger()
 		// errors for show at page
 		var errList []string
@@ -156,9 +193,11 @@ func ParamsScanPageUpload(scnr *opt.ScannerObj) http.HandlerFunc {
 		if err := writeParamsScan(w, scnr, errList); err != nil {
 			log.Error(err.Error())
 		}
+*/
 	})
 }
 
+/*
 // Main writer for http page with Scan Params. Processing data and execute base template
 func writeParamsScan(w http.ResponseWriter, scnr *opt.ScannerObj, errList []string) error {
 	tmpl := scnr.GetUIObj().GetUIHTMLTemplates()
@@ -177,10 +216,7 @@ func writeParamsScan(w http.ResponseWriter, scnr *opt.ScannerObj, errList []stri
 			ActiveDMenuVal:  "/task_param_scan",
 			PageDescription: "Параметры задачи \"Сканирование\"",
 		},
-		ParamsScanData: opt.ParamsScanPageData{
-			GPageURL:   scnr.GetGDocSvc().GetGSheetURL(),
-			AuthClient: scnr.GetGDocSvc().GetCurClien(),
-		},
+		ParamsScanData: *scnr.GetUIObj().GetPageTaskScanData(scnr),
 	}
 
 	// check current values and set indicators
@@ -210,33 +246,7 @@ func writeParamsScan(w http.ResponseWriter, scnr *opt.ScannerObj, errList []stri
 
 	return err
 }
-
-func PParamsPage(scnr *opt.ScannerObj) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log := scnr.GetLogger()
-		data := opt.PParamsPageData{
-			Title: opt.DefUIPageTitle,
-		}
-
-		header := http.StatusOK
-		w.Header().Add("Content-Type", "text/html; charset=utf-8")
-
-		tmpl, err := template.ParseFiles(opt.DefUITemplatesPath + "/pparams_page.html")
-
-		if err != nil {
-			log.Error(fmt.Sprintf("Error while loading HTML template file: %v\n", err.Error()))
-			header = http.StatusInternalServerError
-			w.WriteHeader(header)
-		} else {
-			w.WriteHeader(header)
-			err = tmpl.Execute(w, data)
-			if err != nil {
-				log.Error(fmt.Sprintf("Error executing template: %v\n", err.Error()))
-			}
-		}
-
-	})
-}
+	*/
 
 func StatusPage(scnr *opt.ScannerObj) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

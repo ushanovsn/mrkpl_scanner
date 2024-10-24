@@ -439,6 +439,14 @@ main {
   background-color: var(--warning-hovered);
 }
 
+
+.warninglow {
+  border-color: 1px solid var(--warning-border);
+  padding: 2px 1px;
+  box-shadow: 0 0 10px var(--warning-border);
+}
+
+
 /*****************************************************/
 
 

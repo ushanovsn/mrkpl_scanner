@@ -5,25 +5,25 @@ import (
 	"fmt"
 	"html/template"
 	"mrkpl_scanner/internal/handlers"
-	opt "mrkpl_scanner/internal/options"
+	"mrkpl_scanner/internal/options"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
 // Init new UI object
-func NewUI() *opt.UIObj {
-	ui := &opt.UIObj{}
+func NewUI() *options.UIObj {
+	ui := &options.UIObj{}
 	ui.SetDefaultUI()
 	ui.SetUIServer(&http.Server{})
 	ui.SetUIRouter(chi.NewRouter())
-	ui.SetUINaviMenu(opt.GetNavigationMenu())
+	ui.SetUINaviMenu(options.GetNavigationMenu())
 	ui.SetUIHTMLTemplates(template.Must(template.ParseGlob("./static/htmltemplates/*")))
 	return ui
 }
 
 // Starting UI Server process with configuration
-func StartUIServer(scnr *opt.ScannerObj) {
+func StartUIServer(scnr *options.ScannerObj) {
 	log := scnr.GetLogger()
 	log.Out("Starting Web UI...")
 
@@ -47,7 +47,7 @@ func StartUIServer(scnr *opt.ScannerObj) {
 }
 
 // Custom mux with router interface
-func setRouter(scnr *opt.ScannerObj) {
+func setRouter(scnr *options.ScannerObj) {
 	route := scnr.GetUIObj().GetUIRouter()
 
 	// fileserver for static files and css
@@ -59,11 +59,7 @@ func setRouter(scnr *opt.ScannerObj) {
 	route.Route("/", func(r chi.Router) {
 		r.Get("/", handlers.IndexPage(scnr))
 		r.Route("/task_param_scan", func(r chi.Router) {
-			r.Get("/", handlers.ParamsScanPage(scnr))
-			r.Post("/", handlers.ParamsScanPageUpload(scnr))
-		})
-		r.Route("/pparams", func(r chi.Router) {
-			r.Get("/", handlers.PParamsPage(scnr))
+			r.HandleFunc("/", handlers.ParamsScanPage(scnr))
 		})
 		r.Route("/status", func(r chi.Router) {
 			r.Get("/", handlers.StatusPage(scnr))
@@ -72,7 +68,7 @@ func setRouter(scnr *opt.ScannerObj) {
 }
 
 // Stopping UI Server
-func StopUIServer(scnr *opt.ScannerObj) error {
+func StopUIServer(scnr *options.ScannerObj) error {
 	log := scnr.GetLogger()
 	log.Info("Stopping Web UI...")
 
