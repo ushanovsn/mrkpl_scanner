@@ -42,7 +42,7 @@ func runWorker(scnr *options.ScannerObj) {
 	wrkr := scnr.GetWPObj()
 	ch := *wrkr.GetCMDChan()
 	stat := wrkr.GetStatus()
-	doc := scnr.GetGDocSvc()
+	doc := scnr.GetCloudDocBaseSvc()
 	p := uniparser.New()
 
 	var startRow uint

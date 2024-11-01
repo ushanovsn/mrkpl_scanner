@@ -75,7 +75,8 @@ func InitService() (*options.ScannerObj, error) {
 	scnr.SetParam(param)
 
 	// init and save emty google doc object
-	scnr.SetGDocSvc(gdoc.NewGDoc())
+	scnr.InitCloudDocs()
+	scnr.SetCloudDocBaseSvc(gdoc.NewGDoc())
 
 	//todo init data when starting GDoc operations????
 
@@ -84,7 +85,7 @@ func InitService() (*options.ScannerObj, error) {
 	if err != nil {
 		log.Error(fmt.Sprintf("Error when read parameter : %s. Error: %s", options.DefParamGURLNameP, err.Error()))
 	} else {
-		if err := scnr.GetGDocSvc().SetGSheetURL(gURL); err != nil {
+		if err := scnr.GetCloudDocBaseSvc().SetGSheetURL(gURL); err != nil {
 			log.Error(fmt.Sprintf("Error when Google sheet URL aplying. URL: %s. Error: %s", "", err.Error()))
 		}
 	}
@@ -93,7 +94,7 @@ func InitService() (*options.ScannerObj, error) {
 	if err != nil {
 		log.Error(fmt.Sprintf("Error when read parameter : %s. Error: %s", options.DefParamGAuthNameP, err.Error()))
 	} else {
-		if err := scnr.GetGDocSvc().SetAuthKeyFile(gAuth); err != nil {
+		if err := scnr.GetCloudDocBaseSvc().SetAuthKeyFile(gAuth); err != nil {
 			log.Error(fmt.Sprintf("Error when Google sheet URL aplying. URL: %s. Error: %s", "", err.Error()))
 		}
 	}

@@ -12,13 +12,22 @@ import (
 type ScannerObj struct {
 	conf     ScannerConfig
 	logger   golanglogger.Golanglogger
-	gDoc     *gdoc.GDocObj
+	cldDoc   map[cloudDocType]*gdoc.GDocObj
 	uiObj    *UIObj
 	wrkrObj  *WPObj
 	paramObj *params.ParamsObj
 	wg       sync.WaitGroup
 	stpChan  chan int
 }
+
+// Type of document - read from or write to
+type cloudDocType int
+const (
+	_ 			cloudDocType = iota
+	readDoc
+	writeDoc
+)
+
 
 //
 // LOGGER //
@@ -67,16 +76,34 @@ func (obj *ScannerObj) SetAdminPass(pass string) {
 }
 
 //
-// GOOGLE DOCS //
+// CLOUD GOOGLE DOCS //
 
-// Get google service
-func (obj *ScannerObj) GetGDocSvc() *gdoc.GDocObj {
-	return obj.gDoc
+// initialisind cloud doc maps
+func (obj *ScannerObj) InitCloudDocs() {
+	if obj.cldDoc == nil {
+		obj.cldDoc = make(map[cloudDocType]*gdoc.GDocObj)
+	}
 }
 
-// Set google service
-func (obj *ScannerObj) SetGDocSvc(doc *gdoc.GDocObj) {
-	obj.gDoc = doc
+// Get cloud document service (google doc) for base use - Read or Read/Write
+func (obj *ScannerObj) GetCloudDocBaseSvc() *gdoc.GDocObj {
+	return obj.cldDoc[readDoc]
+}
+
+// Set cloud document service (google doc) for base use - Read or Read/Write
+func (obj *ScannerObj) SetCloudDocBaseSvc(doc *gdoc.GDocObj) {
+	obj.cldDoc[readDoc] = doc
+}
+// GOOGLE DOCS //
+
+// Get cloud document service (google doc) for Write data
+func (obj *ScannerObj) GetCloudDocWriteSvc() *gdoc.GDocObj {
+	return obj.cldDoc[writeDoc]
+}
+
+// Set cloud document service (google doc) for Write
+func (obj *ScannerObj) SetCloudDocWriteSvc(doc *gdoc.GDocObj) {
+	obj.cldDoc[writeDoc] = doc
 }
 
 //

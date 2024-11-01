@@ -28,6 +28,8 @@ type WorkerConfig struct {
 	PriceCol int `cfg:"price_column" descr:"Column number for saving parsed price"`
 	// error column number
 	ErrCol int `cfg:"error_column" descr:"Column number for saving parse error when occures"`
+	// documents separating flag read/write
+	SplitSourceDoc bool
 }
 
 // Worker current status

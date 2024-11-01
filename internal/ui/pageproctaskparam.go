@@ -58,6 +58,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 
 	// current params tab is GOOGLE TAB
 	if val == "source_tab_google" {
+		errListSrc = make([]string, 0)
 		//set paкsed value
 		d.TabSrcActive = val
 
@@ -66,7 +67,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 		val = r.FormValue(pName)
 		log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
 		// Set URL to GDoc object
-		if err = scnr.GetGDocSvc().SetGSheetURL(val); err != nil {
+		if err = scnr.GetCloudDocBaseSvc().SetGSheetURL(val); err != nil {
 			log.Error(fmt.Sprintf("Error when parse URL content to GDoc object. Error: %s", err.Error()))
 			errListSrc = append(errListSrc, "Указан некорректный адрес Online-документа")
 		} else {
@@ -111,11 +112,11 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 							log.Error(fmt.Sprintf("Error while read file content. Error: %s", err.Error()))
 							errListSrc = append(errListSrc, "Ошибка чтения содержимого загруженного файла аутентификации")
 						} else {
-							if err = scnr.GetGDocSvc().SetAuthKeyFile(string(fileContent)); err != nil {
+							if err = scnr.GetCloudDocBaseSvc().SetAuthKeyFile(string(fileContent)); err != nil {
 								log.Error(fmt.Sprintf("Error when set json content to GDoc object. Error: %s", err.Error()))
 								errListSrc = append(errListSrc, "Ошибка применения аутентификационных данных загруженного файла")
 							} else {
-								d.GParamSrc.GAuth.AuthClient = scnr.GetGDocSvc().GetCurClient()
+								d.GParamSrc.GAuth.AuthClient = scnr.GetCloudDocBaseSvc().GetCurClient()
 								// save data to param file
 								if err = scnr.GetParam().SetValue(options.DefParamGAuthNameP, string(fileContent)); err != nil {
 									log.Error(fmt.Sprintf("Error when save json content to parameters file. Error: %s", err.Error()))
@@ -203,12 +204,13 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 		// **************** CLOUD TABLE TAB (GOOGLE) ****************
 		
 		// Get text value of selected tab
-		pName = "save_data"
+		pName = "save_tabs"
 		val = r.FormValue(pName)
 		log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
 
 		// current params tab is GOOGLE TAB
 		if val == "save_tab_google" {
+			errListSrc = make([]string, 0)
 			//set paкsed value
 			d.TabSvActive = val
 
@@ -218,10 +220,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 			log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
 			// Set URL to GDoc object
 			
-			// need second document service!!!!
-
-			/*
-			if err = scnr.GetGDocSvc().SetGSheetURL(val); err != nil {
+			if err = scnr.GetCloudDocWriteSvc().SetGSheetURL(val); err != nil {
 				log.Error(fmt.Sprintf("Error when parse URL content to GDoc object. Error: %s", err.Error()))
 				errListSrc = append(errListSrc, "Указан некорректный адрес Online-документа")
 			} else {
@@ -229,8 +228,6 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 				d.GParamSv.GAuth.GPageURL = val
 				d.GParamSv.GAuth.GPageURLOk = true
 			}
-			*/
-
 			// Get handler for file, size and headers
 			if file, handler, err := r.FormFile("filename_google_save"); err != nil {
 				// if no file - nothing to do
@@ -267,15 +264,11 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 								log.Error(fmt.Sprintf("Error while read file content. Error: %s", err.Error()))
 								errListSrc = append(errListSrc, "Ошибка чтения содержимого загруженного файла аутентификации")
 							} else {
-								if err = scnr.GetGDocSvc().SetAuthKeyFile(string(fileContent)); err != nil {
+								if err = scnr.GetCloudDocWriteSvc().SetAuthKeyFile(string(fileContent)); err != nil {
 									log.Error(fmt.Sprintf("Error when set json content to GDoc object. Error: %s", err.Error()))
 									errListSrc = append(errListSrc, "Ошибка применения аутентификационных данных загруженного файла")
 								} else {
-
-									// need second document service!!!!
-
-									/*
-									d.GParamSv.GAuth.AuthClient = scnr.GetGDocSvc().GetCurClient()
+									d.GParamSv.GAuth.AuthClient = scnr.GetCloudDocWriteSvc().GetCurClient()
 									// save data to param file
 									if err = scnr.GetParam().SetValue(options.DefParamGAuthNameP, string(fileContent)); err != nil {
 										log.Error(fmt.Sprintf("Error when save json content to parameters file. Error: %s", err.Error()))
@@ -283,7 +276,6 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 									} else {
 										d.GParamSv.GAuth.AuthClientOk = true
 									}
-									*/
 								}
 							}
 						}
