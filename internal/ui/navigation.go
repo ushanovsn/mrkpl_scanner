@@ -1,8 +1,12 @@
-package options
+package ui
+
+import (
+	"mrkpl_scanner/internal/options"
+)
 
 // Main navigation menu structure with data returns
-func GetNavigationMenu() []NaviMenu {
-	return []NaviMenu{
+func GetNavigationMenu() []options.NaviMenu {
+	return []options.NaviMenu{
 		{
 			ItmName:   "Главная",
 			ItmLink:   "/",
@@ -19,7 +23,7 @@ func GetNavigationMenu() []NaviMenu {
 			ItmName:   "Конфигурация",
 			ItmLink:   "/config",
 			ItmIsMenu: true,
-			ItmMenu: []NaviDropMenu{
+			ItmMenu: []options.NaviDropMenu{
 				{
 					ItmName: "Основные параметры",
 					ItmLink: "/config_base",
@@ -50,7 +54,7 @@ func GetNavigationMenu() []NaviMenu {
 			ItmName:   "Параметры задач",
 			ItmLink:   "/task_param",
 			ItmIsMenu: true,
-			ItmMenu: []NaviDropMenu{
+			ItmMenu: []options.NaviDropMenu{
 				{
 					ItmName: "Сканирование",
 					ItmLink: "/task_param_scan",

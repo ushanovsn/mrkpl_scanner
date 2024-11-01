@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 	"html/template"
-	"mrkpl_scanner/internal/handlers"
 	"mrkpl_scanner/internal/options"
 	"net/http"
-
 	"github.com/go-chi/chi/v5"
 )
 
@@ -17,7 +15,7 @@ func NewUI() *options.UIObj {
 	ui.SetDefaultUI()
 	ui.SetUIServer(&http.Server{})
 	ui.SetUIRouter(chi.NewRouter())
-	ui.SetUINaviMenu(options.GetNavigationMenu())
+	ui.SetUINaviMenu(GetNavigationMenu())
 	ui.SetUIHTMLTemplates(template.Must(template.ParseGlob("./static/htmltemplates/*")))
 	return ui
 }
@@ -57,12 +55,12 @@ func setRouter(scnr *options.ScannerObj) {
 
 	// set handlers for routes
 	route.Route("/", func(r chi.Router) {
-		r.Get("/", handlers.IndexPage(scnr))
+		r.Handle("/", UIHndlr{scnr, IndexPageHndlr})
 		r.Route("/task_param_scan", func(r chi.Router) {
-			r.HandleFunc("/", handlers.ParamsScanPage(scnr))
+			r.Handle("/", UIHndlr{scnr, ParamsScanPage})
 		})
 		r.Route("/status", func(r chi.Router) {
-			r.Get("/", handlers.StatusPage(scnr))
+			r.Get("/", StatusPage(scnr))
 		})
 	})
 }

@@ -20,9 +20,3 @@ type NaviActiveMenu struct {
 	ActiveDMenuVal  string
 	PageDescription string
 }
-
-// Data for pages templates
-type PagesData struct {
-	pParamScan	ParamsScanPageData
-
-}

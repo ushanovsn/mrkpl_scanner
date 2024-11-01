@@ -75,7 +75,7 @@ func (obj *GDocObj) SetGSheetURL(url string) (err error) {
 }
 
 // Getting the current client email
-func (obj *GDocObj) GetCurClien() string {
+func (obj *GDocObj) GetCurClient() string {
 	return obj.authClient
 }
 

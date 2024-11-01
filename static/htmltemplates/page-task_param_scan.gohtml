@@ -85,7 +85,7 @@
                                     <table>
                                         <tr>
                                             <td><label>Номер строки начала данных</label></td>
-                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="source_g_startrow" size="5"
+                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1-999" name="source_g_startrow" size="5"
                                                        value="{{.StartRowNum}}" {{if not .StartRowNumOk}}class="warninglow"{{end}}/></td>
                                             <td></td>
                                         </tr>
@@ -99,7 +99,7 @@
                                         {{range $id, $elem := .Params}}
                                         <tr class="common_param_row">
                                             <td><label>Столбец для параметра #{{$id}}</label></td>
-                                            <td><input type="text" pattern="[A-Z]" placeholder="A-Z" name="source_g_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
+                                            <td><input type="text" pattern="[A-Z]{1,2}" placeholder="A-ZZ" name="source_g_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
                                             <td>
                                                 <select name="source_g_paramtype{{$id}}">
                                                     <option value="" disabled hidden {{if eq $elem.ColParamType ""}}selected{{end}}>--Выберите параметр--</option>
@@ -151,7 +151,7 @@
                                     <table>
                                         <tr>
                                             <td><label>Номер строки начала данных</label></td>
-                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="source_xl_startrow" size="5"
+                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1-999" name="source_xl_startrow" size="5"
                                                        value="{{.StartRowNum}}" {{if not .StartRowNumOk}}class="warninglow"{{end}}/></td>
                                             <td></td>
                                         </tr>
@@ -165,7 +165,7 @@
                                         {{range $id, $elem := .Params}}
                                         <tr class="common_param_row">
                                             <td><label>Столбец для параметра #{{$id}}</label></td>
-                                            <td><input type="text" pattern="[A-Z]" placeholder="A-Z" name="source_xl_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
+                                            <td><input type="text" pattern="[A-Z]{1,2}" placeholder="A-ZZ" name="source_xl_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
                                             <td>
                                                 <select name="source_xl_paramtype{{$id}}">
                                                     <option value="" disabled hidden {{if eq $elem.ColParamType ""}}selected{{end}}>--Выберите параметр--</option>
@@ -221,7 +221,7 @@
                                         <td width="min-content"><input type="text" placeholder="localhost" name="source_dbaddress"
                                             value="{{.DB.Addr}}" {{if not .DB.AddrOk}}class="warninglow"{{end}}/></td>
                                         <td width="min-content"><label>Порт: </label></td>
-                                        <td width="min-content"><input type="text" pattern="[0-9]{1,3}" placeholder="5432" name="source_dbport" size="6"
+                                        <td width="min-content"><input type="text" pattern="[0-9]{1,6}" placeholder="5432" name="source_dbport" size="6"
                                             value="{{.DB.Port}}" {{if not .DB.PortOk}}class="warninglow"{{end}}/></td>
                                     </tr>
                                     <tr>
@@ -325,7 +325,7 @@
                                     <table>
                                         <tr>
                                             <td><label>Номер строки начала данных</label></td>
-                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="save_g_startrow" size="5"
+                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1-999" name="save_g_startrow" size="5"
                                                        value="{{.StartRowNum}}" {{if not .StartRowNumOk}}class="warninglow"{{end}}/></td>
                                             <td></td>
                                         </tr>
@@ -333,9 +333,9 @@
                                         {{range $id, $elem := .Params}}
                                         <tr>
                                             <td><label>Столбец для параметра #{{$id}}</label></td>
-                                            <td><input type="text" pattern="[A-Z]" placeholder="A-Z" name="save_g_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
+                                            <td><input type="text" pattern="[A-Z]{1,2}" placeholder="A-ZZ" name="save_g_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
                                             <td>
-                                                <select name="save_g_param{{$id}}">
+                                                <select name="save_g_paramtype{{$id}}">
                                                     <option value="" disabled hidden {{if eq $elem.ColParamType ""}}selected{{end}}>--Выберите параметр--</option>
                                                     <option value="price" {{if eq $elem.ColParamType "price"}}selected{{end}}>Обычная цена (со скидкой)</option>
                                                     <option value="no_discount" {{if eq $elem.ColParamType "no_discount"}}selected{{end}}>Полная цена (без скидки)</option>
@@ -393,7 +393,7 @@
                                     <table>
                                         <tr>
                                             <td><label>Номер строки начала данных</label></td>
-                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1" name="save_xl_startrow" size="5"
+                                            <td><input type="text" pattern="[0-9]{1,3}" placeholder="1-999" name="save_xl_startrow" size="5"
                                                         value="{{.StartRowNum}}" {{if not .StartRowNumOk}}class="warninglow"{{end}}/></td>
                                             <td></td>
                                         </tr>
@@ -401,7 +401,7 @@
                                         {{range $id, $elem := .Params}}
                                         <tr>
                                             <td><label>Столбец для параметра #{{$id}}</label></td>
-                                            <td><input type="text" pattern="[A-Z]" placeholder="A-Z" name="save_xl_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
+                                            <td><input type="text" pattern="[A-Z]{1,2}" placeholder="A-ZZ" name="save_xl_param{{$id}}" value="{{$elem.ColParamValue}}" size="5"/></td>
                                             <td>
                                                 <select name="save_xl_paramtype{{$id}}">
                                                     <option value="" disabled hidden {{if eq $elem.ColParamType ""}}selected{{end}}>--Выберите параметр--</option>
@@ -457,7 +457,7 @@
                                         <td width="min-content"><input type="text" placeholder="localhost" name="save_dbaddress"
                                             value="{{.DB.Addr}}" {{if not .DB.AddrOk}}class="warninglow"{{end}}/></td>
                                         <td width="min-content"><label>Порт: </label></td>
-                                        <td width="min-content"><input type="text" pattern="[0-9]{1,3}" placeholder="5432" name="save_dbport" size="6"
+                                        <td width="min-content"><input type="text" pattern="[0-9]{1,6}" placeholder="5432" name="save_dbport" size="6"
                                             value="{{.DB.Port}}" {{if not .DB.PortOk}}class="warninglow"{{end}}/></td>
                                     </tr>
                                     <tr>
