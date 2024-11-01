@@ -39,3 +39,48 @@ func (h UIHndlr) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+
+// Parse file data from HTTP request
+func getFileFromRequst(r *http.Request, searchName string, fType string) (content []byte, err error, msg string) {
+	// Get handler for file, size and headers
+	file, handler, err := r.FormFile(searchName)
+	if err != nil {
+		// if no file - nothing to do
+		if err != http.ErrMissingFile {
+			err = fmt.Errorf("Error when retrieving the file \"%s\": %s", searchName, err.Error())
+			msg = "Ошибка чтения загруженного файла"
+		}
+		return
+	}
+
+	defer file.Close()
+
+	// check content  type
+	if v := handler.Header.Get("Content-Type"); fType != "" && v != fType {
+		err = fmt.Errorf("Wrong content type (%s) for uploaded file, need \"%s\"", v, fType)
+		msg = fmt.Sprintf("Некорректный тип файла, требуется \"%s\"", fType)
+		return
+	}
+
+	// check size
+	if handler.Size == 0 {
+		err = fmt.Errorf("Uploaded file is empty")
+		msg = "Загружен пустой файл"
+		return
+	}
+
+	// Create a byte slice with the same size as the file
+	content = make([]byte, handler.Size)
+	// Read the file content into the byte slice
+	if _, err = file.Read(content); err != nil {
+		err = fmt.Errorf("Error while read file content: %s", err.Error())
+		msg = "Ошибка чтения содержимого загруженного файла"
+		return
+	}
+
+	return
+}
+
+
+

@@ -1,5 +1,8 @@
 package options
 
+import (
+	//"encoding/json"
+)
 // Data for Scan parameters page template
 type ParamsScanPageData struct {
 	// Saving parsed data in source
@@ -10,34 +13,34 @@ type ParamsScanPageData struct {
 	GParamSrc struct {
 		GAuth		GoogleAuthParam
 		TblParam	TableStruct
-		ErrLog		[]string
+		ErrLog		[]string	`json:"-"`
 	}
 	FileSrc struct {
 		File		FileStruct
 		TblParam	TableStruct
-		ErrLog		[]string
+		ErrLog		[]string	`json:"-"`
 	}
 	DBSrc struct {
 		DB			DBStruct
 		TblParam	TableStruct
-		ErrLog		[]string
+		ErrLog		[]string	`json:"-"`
 	}
 	// Save part params
 	TabSvActive		string
 	GParamSv struct {
 		GAuth		GoogleAuthParam
 		TblParam	TableStruct
-		ErrLog		[]string
+		ErrLog		[]string	`json:"-"`
 	}
 	FileSv struct {
 		File		FileStruct
 		TblParam	TableStruct
-		ErrLog		[]string
+		ErrLog		[]string	`json:"-"`
 	}
 	DBSv struct {
 		DB			DBStruct
 		TblParam	TableStruct
-		ErrLog		[]string
+		ErrLog		[]string	`json:"-"`
 	}
 }
 
@@ -95,3 +98,18 @@ type ColParams struct {
 	ColParamValue		string
 	ColParamType		string
 }
+/*
+// Clear error messages when marshalling
+func (p *ParamsScanPageData) MarshalJSON() ([]byte, error) {
+	clr := *p
+	clr.GParamSrc.ErrLog = nil
+	clr.FileSrc.ErrLog = nil
+	clr.DBSrc.ErrLog = nil
+	clr.GParamSv.ErrLog = nil
+	clr.FileSv.ErrLog = nil
+	clr.DBSv.ErrLog = nil
+	return json.Marshal(clr)
+}
+*/
+
+

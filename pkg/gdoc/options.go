@@ -55,13 +55,23 @@ func (obj *GDocObj) SetAuthKeyFile(j string) error {
 	return nil
 }
 
+// Check the file authentication
+func (obj *GDocObj) CheckAuthKeyFile(j string) (usr string, err error) {
+	var cred credentials
+	// Parse service account key
+	if err = json.Unmarshal([]byte(j), &cred); err == nil {
+		usr = cred.ClientEmail
+	}
+	return
+}
+
 // Getting the google sheet URL
-func (obj *GDocObj) GetGSheetURL() string {
+func (obj *GDocObj) GetSheetURL() string {
 	return obj.gSheetURL
 }
 
 // Setting the google sheet URL (URL checking and parsing values from it)
-func (obj *GDocObj) SetGSheetURL(url string) (err error) {
+func (obj *GDocObj) SetSheetURL(url string) (err error) {
 
 	if valURL, valSSId, valSId, ok := parseSheetURL(url); ok {
 		obj.gSheetURL = valURL
@@ -72,6 +82,12 @@ func (obj *GDocObj) SetGSheetURL(url string) (err error) {
 	}
 
 	return err
+}
+
+// Check the google sheet URL (URL checking and parsing values from it)
+func (obj *GDocObj) CheckSheetURL(url string) bool{
+	_, _, _, ok := parseSheetURL(url)
+	return ok
 }
 
 // Getting the current client email
