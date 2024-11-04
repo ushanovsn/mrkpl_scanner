@@ -300,6 +300,25 @@ main {
 
 
 
+/* Fieldset element style */
+.backplate .simple_fieldset {
+  margin: 10px;
+  border-radius:10px;
+  padding:10px;
+  display: inline;
+}
+
+.backplate .simple_fieldset * {
+  padding:2px;
+}
+
+.backplate .legend {
+  margin-bottom:0px;
+  margin-left:16px;
+  font-weight: bolder;
+}
+
+
 /*****************************************************/
 
 
@@ -448,10 +467,6 @@ main {
 
 
 /*****************************************************/
-
-
-
-
 
 
 

@@ -42,6 +42,14 @@ type ParamsScanPageData struct {
 		TblParam	TableStruct
 		ErrLog		[]string	`json:"-"`
 	}
+	Starting struct {
+		SelectName	string
+		AtTime		string
+		AtTimeOk	bool
+		Periodic	int
+		PeriodicOk	bool
+		ErrLog		[]string	`json:"-"`
+	}
 }
 
 

@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -43,6 +44,10 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 	if err = r.ParseMultipartForm(maxSize); err != nil {
 		return fmt.Errorf("Error when parsing page form. Error: %s", err.Error())
 	}
+
+	// for column name checking
+	colNameReg := regexp.MustCompile(`\A([A-Z]){1,2}\z`)
+
 
 								//////////////////////////////////////////////////////////////////////////////
 								//								SOURCE PART									//
@@ -122,7 +127,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 		if num, err := strconv.Atoi(val); err != nil || num < 1 {
 			if err != nil {
 				log.Warn(fmt.Sprintf("Error when parse start row value. Error: %s", err.Error()))
-			} else if num < 1 {
+			} else {
 				log.Warn(fmt.Sprintf("Incorrect start row value: %v", num))
 			}
 			errList = append(errList, "Указан некорректный номер строки начала данных для парсинга")
@@ -137,7 +142,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 		val = r.FormValue(pName)
 		log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
 		// Check value
-		if ok, _ := regexp.MatchString(`\A([A-Z]){1,2}\z`, strings.ToUpper(val)); !ok {
+		if !colNameReg.MatchString(strings.ToUpper(val)) {
 			log.Warn(fmt.Sprintf("Wrong source column \"%s\" value: %s", pName, val))
 			errList = append(errList, "Указан некорректный столбец с данными для парсинга")
 		} else {
@@ -155,7 +160,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 				val = r.FormValue(pName)
 				log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
 				// Check value
-				if ok, _ := regexp.MatchString(`\A([A-Z]){0,2}\z`, strings.ToUpper(val)); !ok {
+				if val != "" && !colNameReg.MatchString(strings.ToUpper(val)) {
 					log.Warn(fmt.Sprintf("Wrong parameter \"%s\" column value: %s", pName, val))
 					errList = append(errList, fmt.Sprintf("Указан некорректный столбец с параметрами: %v", i))
 				} else {
@@ -224,7 +229,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 					errList = append(errList, ("Файл аутентификации: " + errStr))
 				}
 				// error when auth file is not exist and not received now
-				if err == http.ErrMissingFile && !(d.GParamSrc.GAuth.AuthClientOk) {
+				if err == http.ErrMissingFile && !(d.GParamSv.GAuth.AuthClientOk) {
 					log.Warn("Uploaded file \"filename_google_save\" is empty")
 					errList = append(errList, "Файл аутентификации не был загружен")
 				}
@@ -253,7 +258,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 			if num, err := strconv.Atoi(val); err != nil || num < 1 {
 				if err != nil {
 					log.Warn(fmt.Sprintf("Error when parse start row value. Error: %s", err.Error()))
-				} else if num < 1 {
+				} else {
 					log.Warn(fmt.Sprintf("Incorrect start row value: %v", num))
 				}
 				errList = append(errList, "Указан некорректный номер строки начала данных")
@@ -270,7 +275,7 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 				val = r.FormValue(pName)
 				log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
 				// Check value
-				if ok, _ := regexp.MatchString(`\A([A-Z]){0,2}\z`, strings.ToUpper(val)); !ok {
+				if val != "" && !colNameReg.MatchString(strings.ToUpper(val)) {
 					log.Warn(fmt.Sprintf("Wrong parameter \"%s\" column value: %s", pName, val))
 					errList = append(errList, fmt.Sprintf("Указан некорректный столбец с параметрами: %v", i))
 				} else {
@@ -293,6 +298,67 @@ func procTaskParamScan(d *options.ParamsScanPageData, r *http.Request, scnr *opt
 			d.GParamSv.ErrLog = errList
 		}
 	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	//								COMMON PART									//
+	//////////////////////////////////////////////////////////////////////////////
+
+	// *** Get text value of selected radiobutton
+	pName = "start_type"
+	val = r.FormValue(pName)
+	log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
+	errList = make([]string, 0)
+	d.Starting.SelectName = val
+
+	// current start parameter is Start At Time
+	if val == "start_at_time" {
+		// *** Get text value of start time
+		pName = "start_at_time_value"
+		val = r.FormValue(pName)
+		log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
+		// Set time param
+		if val == "" {
+			d.Starting.AtTimeOk = false
+			errList = append(errList, "Необходимо указать время запуска сканера")
+		}else if _, err := time.Parse("15:04", val); err != nil {
+			d.Starting.AtTimeOk = false
+			log.Warn(fmt.Sprintf("Error when parse start time value (%s). Error: %s", val, err.Error()))
+			errList = append(errList, "Указано некорректное время запуска сканера")
+		} else {
+			// set parsed value
+			d.Starting.AtTime = val
+			d.Starting.AtTimeOk = true
+		}
+	} else if val == "start_period" {
+		// current start parameter is Start With Period
+	
+		// *** Get text value of Period Duration
+		pName = "start_period_value"
+		val = r.FormValue(pName)
+		log.Debug(fmt.Sprintf("Uploaded value of %s : %v", pName,  val))
+		// Set time param
+		if val == "" {
+			d.Starting.PeriodicOk = false
+			errList = append(errList, "Необходимо указать период запуска сканера")
+		}else if v, err := strconv.Atoi(val); err != nil || v < 1 {
+			if err != nil {
+				log.Warn(fmt.Sprintf("Error when parse period time value (%s). Error: %s", val, err.Error()))
+			} else {
+				log.Warn(fmt.Sprintf("Incorrect period time value: %v", v))
+			}
+			d.Starting.PeriodicOk = false
+			errList = append(errList, "Указано некорректное значение периода запуска сканера")
+		} else {
+			// set parsed value
+			d.Starting.Periodic = v
+			d.Starting.PeriodicOk = true
+		}
+	}
+
+	d.Starting.ErrLog = errList
+
+
+
 
 	// convert parameters data to json string
 	jsonString, err := json.Marshal(d)

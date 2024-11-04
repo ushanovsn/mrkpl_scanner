@@ -39,7 +39,6 @@
             }
         }
 
-
         // hide elements on page load
         window.onload = () => {
             hideOut(document.getElementById('sourceequal'));
@@ -535,6 +534,50 @@
 
                     </div>
 
+                </div>
+
+
+
+
+<!--     БЛОК ОБЩИХ ПАРАМЕТРОВ       -->
+<!--     БЛОК ОБЩИХ ПАРАМЕТРОВ       -->
+<!--     БЛОК ОБЩИХ ПАРАМЕТРОВ       -->
+
+                <div>
+                {{with .Starting}}
+                    <div>
+                        <fieldset class="simple_fieldset">
+                            <legend class="legend">Укажите тип запуска сканера:</legend>
+                        
+                            <div>
+                                <input type="radio" id="start_manual" name="start_type" value="start_manual" {{if or (eq .SelectName "start_manual") (eq .SelectName "")}}checked{{end}}/>
+                                <label for="start_manual">Только вручную (кнопкой из интерфейса)</label>
+                            </div>
+                        
+                            <div>
+                                <input type="radio" id="start_at_time" name="start_type" value="start_at_time" {{if eq .SelectName "start_at_time"}}checked{{end}}/>
+                                <label for="start_at_time">В указанное время:</label>
+                                <input type="time" name="start_at_time_value" value="{{.AtTime}}" {{if and (not .AtTimeOk) (eq .SelectName "start_at_time")}}class="warninglow"{{end}}>
+                            </div>
+                        
+                            <div>
+                                <input type="radio" id="start_period" name="start_type" value="start_period" {{if eq .SelectName "start_period"}}checked{{end}}/>
+                                <label for="start_period">Каждые (мин):</label>
+                                <input type="number" name="start_period_value" min="0" max="1440" placeholder="60" value="{{.Periodic}}" {{if and (not .PeriodicOk) (eq .SelectName "start_period")}}class="warninglow"{{end}}>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    {{if .ErrLog}}
+                    <div class="warningslines">
+                        {{range .ErrLog}}
+                        <ul>
+                            <li>{{.}}</li>
+                        </ul>
+                        {{end}}
+                    </div>
+                    {{end}}
+                {{end}}
                 </div>
 
             </form>
