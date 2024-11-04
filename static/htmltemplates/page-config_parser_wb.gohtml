@@ -1,0 +1,79 @@
+{{define "parser_config_wb"}}
+{{template "header" .}}
+{{template "navigation" .}}
+
+
+    <script>     
+        function disablingElem(rBox) {
+            if (rBox.value = "discount_auto") {
+                document.getElementById('discount_manual_value').disabled = true
+            } else {
+                document.getElementById('discount_manual_value').disabled = false
+            }
+        }
+    </script>
+
+
+
+
+    <main>
+    
+        {{with .ConfWBData}}
+        <div class="backplate">
+
+            <form id="conf_wb_form" method="POST" action="/parser_config_wb" enctype="multipart/form-data">
+
+                <p><h3>WILDBERRIES</h3></p><br><br>
+
+                <div class="conf_list">
+                    <div>
+                        <p>Задержка между запросами (мсек): </p>
+                        <input type="number" name="query_delay" min="0" max="30000" placeholder="1000" value="{{.RequestDelay}}" {{if not .RequestDelayOk}}class="warninglow"{{end}}>
+                    </div>
+                    
+                    <div>
+                        <p>Определение адреса: </p>
+                        <select name="address_ident">
+                            <option value="" {{if eq .Address ""}}selected{{end}}>Автоматически (WB)</option>
+                            <option value="addr_services" {{if eq .Address "addr_services"}}selected{{end}}>Внешние сервисы (по ip)</option>
+                            <option value="addr_moskow" {{if eq .Address "addr_moskow"}}selected{{end}}>Москва</option>
+                            <option value="addr_spb" {{if eq .Address "addr_spb"}}selected{{end}}>Санкт-Перербург</option>
+                            <option value="addr_kazan" {{if eq .Address "addr_kazan"}}selected{{end}}>Казань</option>
+                            <option value="addr_nnovgorod" {{if eq .Address "addr_nnovgorod"}}selected{{end}}>Н.Новгород</option>
+                            <option value="addr_penza" {{if eq .Address "addr_penza"}}selected{{end}}>Пенза</option>
+                            <option value="addr_saransk" {{if eq .Address "addr_saransk"}}selected{{end}}>Саранск</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <p>Расчет "Специальной цены" (скидка по карте):</p>
+
+                        <fieldset class="simple_fieldset">
+                            <legend class="legend">Тип расчета:</legend>
+                        
+                            <div>
+                                <input type="radio" id="discount_auto" name="discount_calc" value="discount_auto" {{if or (eq .DiscountType "discount_auto") (eq .DiscountType "")}}checked{{end}}/>
+                                <label for="discount_auto">Получать скидку "по карте" от WB автоматически</label>
+                            </div>
+                        
+                            <div>
+                                <input type="radio" id="discount_manual" name="discount_calc" value="discount_manual" {{if eq .DiscountType "discount_manual"}}checked{{end}}/>
+                                <label for="discount_manual">Указать значение скидки для расчета:</label>
+                                <span><input type="number" name="discount_manual_value" placeholder="3.5" step="0.01" value="{{.DiscountValue}}" max="99.99" min="0" {{if and (not .DiscountValueOk) (eq .DiscountType "discount_manual")}}class="warninglow"{{end}}>%</span>
+                            </div>
+                        </fieldset>
+                    </div>
+                
+                
+                </div>
+            </form>
+
+            <button class="sbmtBtn" type="submit" form="conf_wb_form" value="apply">Отправить</button>
+
+        </div>
+        {{end}}
+
+    </main>
+
+{{template "footer"}}
+{{end}}

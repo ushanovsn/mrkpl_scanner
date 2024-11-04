@@ -30,19 +30,19 @@ func GetNavigationMenu() []options.NaviMenu {
 				},
 				{
 					ItmName: "Wildberries",
-					ItmLink: "/config_wb",
+					ItmLink: "/parser_config_wb",
 				},
 				{
 					ItmName: "Ozon",
-					ItmLink: "/config_ozon",
+					ItmLink: "/parser_config_ozon",
 				},
 				{
 					ItmName: "Yandex Market",
-					ItmLink: "/config_yandex_market",
+					ItmLink: "/parser_config_yandex_market",
 				},
 				{
 					ItmName: "Avito",
-					ItmLink: "/config_avito",
+					ItmLink: "/parser_config_avito",
 				},
 				{
 					ItmName: "Уведомления",

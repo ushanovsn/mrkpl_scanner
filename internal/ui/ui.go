@@ -62,6 +62,7 @@ func setRouter(scnr *options.ScannerObj) {
 		r.Route("/status", func(r chi.Router) {
 			r.Get("/", StatusPage(scnr))
 		})
+		r.Handle("/parser_config_wb", UIHndlr{scnr, ConfWB})
 	})
 }
 

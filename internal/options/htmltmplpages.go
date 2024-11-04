@@ -3,6 +3,7 @@ package options
 import (
 	//"encoding/json"
 )
+
 // Data for Scan parameters page template
 type ParamsScanPageData struct {
 	// Saving parsed data in source
@@ -106,18 +107,19 @@ type ColParams struct {
 	ColParamValue		string
 	ColParamType		string
 }
-/*
-// Clear error messages when marshalling
-func (p *ParamsScanPageData) MarshalJSON() ([]byte, error) {
-	clr := *p
-	clr.GParamSrc.ErrLog = nil
-	clr.FileSrc.ErrLog = nil
-	clr.DBSrc.ErrLog = nil
-	clr.GParamSv.ErrLog = nil
-	clr.FileSv.ErrLog = nil
-	clr.DBSv.ErrLog = nil
-	return json.Marshal(clr)
+
+
+// Data for WB configuration page template
+type ConfWBPageData struct {
+	// Delay between requests
+	RequestDelay	int
+	// Delay between requests access flag
+	RequestDelayOk	bool
+	// Location addres
+	Address			string
+	// Special discount type
+	DiscountType	string
+	// Special discount manual value
+	DiscountValue	float64
+	DiscountValueOk	bool
 }
-*/
-
-

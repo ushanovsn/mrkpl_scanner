@@ -274,6 +274,7 @@ main {
 
 .backplate .conf_list > * {
   width: 100%;
+  margin: 2px;
 }
 
 
