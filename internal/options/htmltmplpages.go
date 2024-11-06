@@ -115,11 +115,14 @@ type ConfWBPageData struct {
 	RequestDelay	int
 	// Delay between requests access flag
 	RequestDelayOk	bool
-	// Location addres
-	Address			string
+	// Location addres identification
+	AddressType		string
 	// Special discount type
 	DiscountType	string
 	// Special discount manual value
 	DiscountValue	float64
+	// Special discount manual value access flag
 	DiscountValueOk	bool
+	// Errors list
+	ErrLog			[]string	`json:"-"`
 }
