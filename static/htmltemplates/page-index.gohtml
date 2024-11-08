@@ -4,20 +4,53 @@
 
 
     <script>
+        function disablingElem(toggleObj, idName) {
+            //console.log(toggleObj.checked)
+            if (toggleObj.checked) {
+                document.getElementById(idName).disabled = false
+            } else {
+                document.getElementById(idName).disabled = true
+            }
+        }
 
+        // check elements on page load
+        window.onload = () => {
+            disablingElem(document.getElementById('scanner_toogle'), "scanner_options");
+        };
     </script>
 
     <main>
-        <h1>Состояние и управление парсингом</h1>
-        <br>
-        <h2>В разработке....</h2>
+        <div class="backplate">
+            <p><h3>СКАНЕР</h3></p><br><br>
 
-        <details>
-            <summary>Доп параметры</summary>
+            <div class="conf_list">
+                <label class="toggle">
+                    <input class="toggle-checkbox" type="checkbox" id="scanner_toogle" onclick="disablingElem(this, 'scanner_options')">
+                    <div class="toggle-switch"></div>
+                    <span class="toggle-label">Сервис сканера</span>
+                </label>
 
-            <h3>Параметры отсутствуют</h3>
-        </details>
+                <div>
+                    <fieldset id="scanner_options" class="simple_fieldset">
+                        <legend class="legend">Состояние и управление:</legend>
+                        <div>
+                            <label class="info_line_label">Тип запуска сервиса (из конфигурации):</label>
+                            <span class="info_line" name="scanner_start_type">Запуск вручную, кнопкой из панели управления</span>
+                        </div>
+                        <div>
+                            <label class="info_line_label">Состояние сервиса:</label>
+                            <span class="ok_line" name="scanner_current_state">Сервис остановлен (2024-11-08T21:13)</span>
+                        </div>
+                        <div>
+                            <label class="info_line_label">Ошибки сервиса:</label>
+                            <span class="err_line" name="scanner_error">Ошибки в работе отсутствуют (2024-11-08T21:13)</span>
+                        </div>
+                        <button class="sbmtBtn">Запуск сканирования</button>
+                    </fieldset>
+                </div>
+            </div>
 
+        </div>
     </main>
 
 {{template "footer"}}

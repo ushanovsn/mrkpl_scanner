@@ -49,6 +49,17 @@
   --btn-active: #2f599e;
   --btn-disabled: #6c87b5;
 
+  /* Info elements */
+  --lbl-text: #081f46;
+  --text-color: #000000;
+  --text-info: #081f46;
+  --text-ok: #005a0a;
+  --text-error: #8c0404;
+
+  /* Toogle elements */
+  --tgl-back-off: #ccc;
+  --tgl-back-on: #56c080;
+
 
 
   /* Warnings block */
@@ -306,17 +317,104 @@ main {
   margin: 10px;
   border-radius:10px;
   padding:10px;
-  display: inline;
+}
+
+.backplate .fieldset_compact {
+  width:fit-content;
 }
 
 .backplate .simple_fieldset * {
   padding:2px;
 }
 
+.backplate .simple_fieldset .sbmtBtn {
+  padding:0 20px;
+}
+
 .backplate .legend {
   margin-bottom:0px;
   margin-left:16px;
   font-weight: bolder;
+}
+
+
+
+
+/* Info Line element style */
+.backplate .info_line_label {
+  margin: 10px;
+  font-style:normal;
+  color: var(--lbl-text);
+  font-weight: bold;
+}
+
+.backplate .info_line:hover  {
+  color: var(--text-info);
+}
+
+.backplate .ok_line:hover  {
+  color: var(--text-ok);
+}
+
+.backplate .err_line:hover  {
+  color: var(--text-error);
+}
+
+
+
+
+
+/* Toogle element style */
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.toggle-switch {
+  display: inline-block;
+  background: var(--tgl-back-off);
+  border-radius: 16px;
+  width: 58px;
+  height: 32px;
+  position: relative;
+  vertical-align: middle;
+  transition: background 0.25s;
+}
+.toggle-switch:before, .toggle-switch:after {
+  content: "";
+}
+.toggle-switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.25s;
+}
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+.toggle-checkbox:checked + .toggle-switch {
+  background: var(--tgl-back-on);
+}
+.toggle-checkbox:checked + .toggle-switch:before {
+  left: 30px;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-label {
+  margin-left: 5px;
+  position: relative;
+  top: 2px;
 }
 
 
