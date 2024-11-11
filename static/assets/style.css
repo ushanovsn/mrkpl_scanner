@@ -362,12 +362,22 @@ main {
 
 
 
+/* Refresh link-img element style */
+.backplate .refresh img {
+  float: right;
+  border: 0;
+}
+.backplate .refresh:hover img {
+  transition: 0.2s;
+  transform: scale(1.5);
+}
+
+
 
 
 /* Toogle element style */
 .toggle {
   cursor: pointer;
-  display: inline-block;
 }
 
 .toggle-switch {

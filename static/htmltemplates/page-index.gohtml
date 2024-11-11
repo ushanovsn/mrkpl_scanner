@@ -4,6 +4,17 @@
 
 
     <script>
+        function toogling(obj, disableName, cmdPrefName, cmdLblName) {
+            var cmdVal = ""
+            if (obj.checked) {
+                cmdVal = "_on"
+            } else {
+                cmdVal = "_off"
+            }
+            disablingElem(obj, disableName);
+            cmdToBackend((cmdPrefName+cmdVal), cmdLblName);
+        }
+
         function disablingElem(toggleObj, idName) {
             //console.log(toggleObj.checked)
             if (toggleObj.checked) {
@@ -11,6 +22,36 @@
             } else {
                 document.getElementById(idName).disabled = true
             }
+        }
+
+        // reload\refresh with delay
+        function reload_interval(time, relType){
+            setTimeout(function(){
+                if (relType == "reload") {
+                    reloadPage();
+                } else if (relType == "refresh") {
+                    refreshPage();
+                }
+            }, time);
+
+        }
+
+        function reloadPage() {
+            location.reload();
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        async function cmdToBackend(cmd, cmdSpan) {
+            //var req = await fetch("\\"+cmd).then(r => r.json())
+            //document.getElementById(cmdSpan).textContent = req.CurrentCmd;
+            if (cmdSpan != "") {
+                document.getElementById(cmdSpan).textContent = cmd;
+            }
+            // and refresh page after dalay
+            reload_interval(3000, "reload");
         }
 
         // check elements on page load
@@ -24,11 +65,16 @@
             <p><h3>СКАНЕР</h3></p><br><br>
 
             <div class="conf_list">
+                <p><a class="refresh" href="#" onclick="reloadPage()" title="Обновить">
+                    <img src="/assets/pic/refresh.png" width="40" height="40" alt="Обновить">
+                </a></p>
+
                 <label class="toggle">
-                    <input class="toggle-checkbox" type="checkbox" id="scanner_toogle" onclick="disablingElem(this, 'scanner_options')">
+                    <input class="toggle-checkbox" type="checkbox" id="scanner_toogle" onclick="toogling(this, 'scanner_options', 'scanner', 'scanner_current_cmd');">
                     <div class="toggle-switch"></div>
                     <span class="toggle-label">Сервис сканера</span>
                 </label>
+                
 
                 <div>
                     <fieldset id="scanner_options" class="simple_fieldset">
@@ -42,10 +88,14 @@
                             <span class="ok_line" name="scanner_current_state">Сервис остановлен (2024-11-08T21:13)</span>
                         </div>
                         <div>
+                            <label class="info_line_label">Команда управления:</label>
+                            <span class="info_line" id="scanner_current_cmd" name="scanner_current_cmd">Получена команда остановки сервиса</span>
+                        </div>
+                        <div>
                             <label class="info_line_label">Ошибки сервиса:</label>
                             <span class="err_line" name="scanner_error">Ошибки в работе отсутствуют (2024-11-08T21:13)</span>
                         </div>
-                        <button class="sbmtBtn">Запуск сканирования</button>
+                        <button class="sbmtBtn" onclick="cmdToBackend('scanner_start', 'scanner_current_cmd');">Запуск сканирования</button>
                     </fieldset>
                 </div>
             </div>
