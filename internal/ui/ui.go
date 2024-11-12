@@ -55,14 +55,39 @@ func setRouter(scnr *options.ScannerObj) {
 
 	// set handlers for routes
 	route.Route("/", func(r chi.Router) {
-		r.Handle("/", UIHndlr{scnr, IndexPageHndlr})
+		r.Route("/",  func(r chi.Router) {
+			r.Handle("/", UIHndlr{scnr, IndexPageHndlr})
+			r.Get("/cmd/{cmd}", ProcessCMD(scnr))
+		})
 		r.Route("/task_param_scan", func(r chi.Router) {
 			r.Handle("/", UIHndlr{scnr, ParamsScanPage})
 		})
 		r.Route("/status", func(r chi.Router) {
-			r.Get("/", StatusPage(scnr))
+			r.Get("/", TemplatePage(scnr))
 		})
-		r.Handle("/parser_config_wb", UIHndlr{scnr, ConfWB})
+		r.Route("/parser_config_wb", func(r chi.Router) {
+			r.Handle("/", UIHndlr{scnr, ConfWB})
+		})
+		
+		// templates in design
+		r.Route("/log", func(r chi.Router) {
+			r.Get("/", TemplatePage(scnr))
+		})
+		r.Route("/parser_config_ozon", func(r chi.Router) {
+			r.Get("/", TemplatePage(scnr))
+		})
+		r.Route("/parser_config_yandex_market", func(r chi.Router) {
+			r.Get("/", TemplatePage(scnr))
+		})
+		r.Route("/parser_config_avito", func(r chi.Router) {
+			r.Get("/", TemplatePage(scnr))
+		})
+		r.Route("/task_param_monitor", func(r chi.Router) {
+			r.Get("/", TemplatePage(scnr))
+		})
+		r.Route("/task_param_search", func(r chi.Router) {
+			r.Get("/", TemplatePage(scnr))
+		})
 	})
 }
 

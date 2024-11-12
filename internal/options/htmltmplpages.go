@@ -126,3 +126,18 @@ type ConfWBPageData struct {
 	// Errors list
 	ErrLog			[]string	`json:"-"`
 }
+
+
+// Data for Index page template
+type IndexPageData struct {
+	// Enable status of Scanner service
+	ScannerEnable	bool
+	// Status and state Scanner service info
+	ScannerSvcState	SeviceInfoData
+}
+
+type SeviceInfoData struct {
+	AutoStartType	string
+	CurrentState	string
+	CurrentError	string
+}

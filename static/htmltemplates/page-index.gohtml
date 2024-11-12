@@ -45,10 +45,10 @@
         }
 
         async function cmdToBackend(cmd, cmdSpan) {
-            //var req = await fetch("\\"+cmd).then(r => r.json())
-            //document.getElementById(cmdSpan).textContent = req.CurrentCmd;
+            var req = await fetch("\\cmd\\"+cmd).then(r => r.json())
+            document.getElementById(cmdSpan).textContent = req.CurrentCmd;
             if (cmdSpan != "") {
-                document.getElementById(cmdSpan).textContent = cmd;
+                document.getElementById(cmdSpan).textContent = req.CurrentCmd;
             }
             // and refresh page after dalay
             reload_interval(3000, "reload");
@@ -65,39 +65,44 @@
             <p><h3>СКАНЕР</h3></p><br><br>
 
             <div class="conf_list">
+                {{with .Scanner}}
                 <p><a class="refresh" href="#" onclick="reloadPage()" title="Обновить">
                     <img src="/assets/pic/refresh.png" width="40" height="40" alt="Обновить">
                 </a></p>
 
                 <label class="toggle">
-                    <input class="toggle-checkbox" type="checkbox" id="scanner_toogle" onclick="toogling(this, 'scanner_options', 'scanner', 'scanner_current_cmd');">
+                    <input class="toggle-checkbox" type="checkbox" id="scanner_toogle"
+                     onclick="toogling(this, 'scanner_options', 'scanner', 'scanner_current_cmd');" {{if .ScannerEnable}}checked{{end}}>
                     <div class="toggle-switch"></div>
                     <span class="toggle-label">Сервис сканера</span>
                 </label>
                 
 
                 <div>
+                    {{with .ScannerSvcState}}
                     <fieldset id="scanner_options" class="simple_fieldset">
                         <legend class="legend">Состояние и управление:</legend>
                         <div>
                             <label class="info_line_label">Тип запуска сервиса (из конфигурации):</label>
-                            <span class="info_line" name="scanner_start_type">Запуск вручную, кнопкой из панели управления</span>
+                            <span class="info_line" name="scanner_start_type">{{.AutoStartType}}</span>
                         </div>
                         <div>
                             <label class="info_line_label">Состояние сервиса:</label>
-                            <span class="ok_line" name="scanner_current_state">Сервис остановлен (2024-11-08T21:13)</span>
+                            <span class="ok_line" name="scanner_current_state">{{.CurrentState}}</span>
                         </div>
                         <div>
                             <label class="info_line_label">Команда управления:</label>
-                            <span class="info_line" id="scanner_current_cmd" name="scanner_current_cmd">Получена команда остановки сервиса</span>
+                            <span class="info_line" id="scanner_current_cmd" name="scanner_current_cmd"></span>
                         </div>
                         <div>
                             <label class="info_line_label">Ошибки сервиса:</label>
-                            <span class="err_line" name="scanner_error">Ошибки в работе отсутствуют (2024-11-08T21:13)</span>
+                            <span class="err_line" name="scanner_error">{{.CurrentError}}</span>
                         </div>
                         <button class="sbmtBtn" onclick="cmdToBackend('scanner_start', 'scanner_current_cmd');">Запуск сканирования</button>
                     </fieldset>
+                    {{end}}
                 </div>
+                {{end}}
             </div>
 
         </div>
