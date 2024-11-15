@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"mrkpl_scanner/internal/options"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -88,7 +87,6 @@ func ProcessCMD(scnr *options.ScannerObj) http.HandlerFunc {
 			CurrentCmd: "Получена команда: " + p,
 		}
 
-		time.Sleep(time.Second*10)
 		bAr, err := json.Marshal(respCmd)
 		if err != nil {
 			log.Error("Error when marshalling response CMD: "+ err.Error())

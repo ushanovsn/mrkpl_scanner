@@ -14,8 +14,8 @@ func GetNavigationMenu() []options.NaviMenu {
 			ItmMenu:   nil,
 		},
 		{
-			ItmName:   "Статус",
-			ItmLink:   "/status",
+			ItmName:   "Уведомления",
+			ItmLink:   "/notify",
 			ItmIsMenu: false,
 			ItmMenu:   nil,
 		},
@@ -24,10 +24,6 @@ func GetNavigationMenu() []options.NaviMenu {
 			ItmLink:   "/config",
 			ItmIsMenu: true,
 			ItmMenu: []options.NaviDropMenu{
-				{
-					ItmName: "Основные параметры",
-					ItmLink: "/config_base",
-				},
 				{
 					ItmName: "Wildberries",
 					ItmLink: "/parser_config_wb",
@@ -43,10 +39,6 @@ func GetNavigationMenu() []options.NaviMenu {
 				{
 					ItmName: "Avito",
 					ItmLink: "/parser_config_avito",
-				},
-				{
-					ItmName: "Уведомления",
-					ItmLink: "/config_notify",
 				},
 			},
 		},

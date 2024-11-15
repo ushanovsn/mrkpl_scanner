@@ -1,0 +1,31 @@
+{{define "log"}}
+{{template "header" .}}
+{{template "navigation" .}}
+
+
+    <script>
+        function reloadPage() {
+            location.reload();
+        }
+    </script>
+
+    <main>
+        <div class="backplate">
+            <p><a class="refresh" href="#" onclick="reloadPage()" title="Обновить">
+                <img src="/assets/pic/refresh.png" width="40" height="40" alt="Обновить">
+            </a></p>
+
+            <p><h3>ЛОГ:</h3></p><br><br>
+
+            <div class="log">
+                {{range .Log}}
+                <ul>
+                    <li class="info_line">{{.}}</li>
+                </ul>
+                {{end}}
+            </div>
+        </div>
+    </main>
+
+{{template "footer"}}
+{{end}}

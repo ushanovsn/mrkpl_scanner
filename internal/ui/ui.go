@@ -62,17 +62,17 @@ func setRouter(scnr *options.ScannerObj) {
 		r.Route("/task_param_scan", func(r chi.Router) {
 			r.Handle("/", UIHndlr{scnr, ParamsScanPage})
 		})
-		r.Route("/status", func(r chi.Router) {
+		r.Route("/notify", func(r chi.Router) {
 			r.Get("/", TemplatePage(scnr))
 		})
 		r.Route("/parser_config_wb", func(r chi.Router) {
 			r.Handle("/", UIHndlr{scnr, ConfWB})
 		})
-		
-		// templates in design
 		r.Route("/log", func(r chi.Router) {
-			r.Get("/", TemplatePage(scnr))
+			r.Handle("/", UIHndlr{scnr, LogPageHndlr})
 		})
+
+		// templates in design
 		r.Route("/parser_config_ozon", func(r chi.Router) {
 			r.Get("/", TemplatePage(scnr))
 		})

@@ -428,6 +428,20 @@ main {
 }
 
 
+
+
+/* Log style */
+
+  .backplate .log {
+    margin: 10px;
+    background-color: var(--panel-inner-form);
+    list-style-type: none;
+  }
+  
+  .backplate .log ul {
+    list-style-type: none;
+  }
+
 /*****************************************************/
 
 
